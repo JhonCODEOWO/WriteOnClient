@@ -1,0 +1,19 @@
+<form class="w-[80%] mx-auto dark:bg-neutral-800 rounded-xl backdrop-blur-lg shadow-lg overflow-hidden">
+    <img src="image.png" alt="" class="object-cover w-full">
+    <div class="p-5">
+        <h1 class="mb-8 text-white text-center">Inicia sesión</h1>
+
+        <div class="flex flex-col gap-y-4">
+            <app-input-component label="Correo electrónico" inputType="email" />
+            <app-input-component label="Contraseña" inputType="password" />
+            <button type="button"
+                class="py-3 px-4 inline-flex items-center gap-x-2 font-medium rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:text-neutral-800 dark:hover:bg-neutral-700 dark:hover:text-white cursor-pointer transition-colors">
+                Iniciar sesión
+            </button>
+        </div>
+        <div class="mt-3 flex justify-between">
+            <a href="" class="link">¿Olvidaste tu contraseña?</a>
+            <a href="" class="link">Crear cuenta</a>
+        </div>
+    </div>
+</form>

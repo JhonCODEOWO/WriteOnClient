@@ -1,1 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+/* Preline UI */
+@source "../node_modules/preline/dist/*.js";
+@import "../node_modules/preline/variants.css";
+
+/* Plugins */
+@plugin "@tailwindcss/forms";
+
+h1 {
+    @apply text-3xl md:text-4xl font-bold
+}
+
+.link {
+    @apply text-blue-600 dark:text-neutral-200 hover:underline
+}
