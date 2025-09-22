@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "env-set": "node ./scripts/set-envs.js"
   },
   "private": true,
   "dependencies": {
@@ -19,6 +20,7 @@
     "@angular/platform-browser-dynamic": "^19.1.0",
     "@angular/router": "^19.1.0",
     "@tailwindcss/postcss": "^4.1.13",
+    "dotenv": "^17.2.2",
     "postcss": "^8.5.6",
     "preline": "^3.2.3",
     "rxjs": "~7.8.0",
