@@ -1,13 +1,27 @@
-<form class="w-[80%] mx-auto dark:bg-neutral-800 rounded-xl backdrop-blur-lg shadow-lg overflow-hidden">
+<form class="w-[80%] mx-auto dark:bg-neutral-800 rounded-xl backdrop-blur-lg shadow-lg overflow-hidden"
+    [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <img src="image.png" alt="" class="object-cover w-full">
     <div class="p-5">
         <h1 class="mb-8 text-white text-center">Inicia sesión</h1>
-
+        @if (error() && !loading()) {
+        <div class="mt-2 bg-red-500 text-sm text-white rounded-lg p-4 mb-4" role="alert" tabindex="-1"
+            aria-labelledby="hs-solid-color-danger-label">
+            <span id="hs-solid-color-danger-label" class="font-bold">Ooops</span> {{error()}}
+        </div>
+        }
+        @if (loading()) {
+            <div class="w-full flex justify-center p-3">
+                <div class="animate-spin inline-block size-8 border-3 border-current border-t-transparent text-blue-600 rounded-full dark:text-white"
+            role="status" aria-label="loading">
+            <span class="sr-only">Loading...</span>
+        </div>
+            </div>
+        }
         <div class="flex flex-col gap-y-4">
-            <app-input-component label="Correo electrónico" inputType="email" />
-            <app-input-component label="Contraseña" inputType="password" />
-            <button type="button"
-                class="py-3 px-4 inline-flex items-center gap-x-2 font-medium rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:text-neutral-800 dark:hover:bg-neutral-700 dark:hover:text-white cursor-pointer transition-colors">
+            <app-input-component label="Correo electrónico" inputType="email" [formGroup]="loginForm" name="email" />
+            <app-input-component label="Contraseña" inputType="password" [formGroup]="loginForm" name="password" />
+            <button type="submit"
+                class="py-3 px-4 inline-flex items-center gap-x-2 font-medium rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:text-neutral-800 dark:hover:bg-neutral-700 dark:hover:text-white cursor-pointer transition-colors">
                 Iniciar sesión
             </button>
         </div>

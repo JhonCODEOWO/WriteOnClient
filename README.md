@@ -6,6 +6,7 @@ A client example in Angular that interacts with the Backend of WriteOn, feel fre
 
 ## How use it 🛠️
 1. Clone or download the source code
-2. Now place the **.env** file in the root of the project and place all keys necessary.
-3. Execute command `npm run env-set` to set all env values in Angular Environments. (⚠️ Use it each time you add/change values inside the **.env** file)
-4. Execute `npm run start`
+2. Run `npm install` command to prepare all things necessary to run the project.
+3. Now place the **.env** file in the root of the project and place all keys necessary.
+4. Execute command `npm run env-set` to set all env values in Angular Environments. (⚠️ Use it each time you add/change values inside the **.env** file)
+5. Execute `npm run start`
