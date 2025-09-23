@@ -27,7 +27,11 @@ export class FormHelper {
         case 'uniqueEmail':
           return `El correo ya ha sido utilizado, por favor ingrese otro.`
 
+        case 'maxlength':
+          return `Este campo admite una longitud máxima de ${value.requiredLength} y actualmente tiene ${value.actualLength} elementos.`
+
         default:
+          console.info(value);
           return 'No se ha definido una descripción para el error ' + key + ' ' + value;
       }
     }

@@ -16,7 +16,7 @@
       peer-not-placeholder-shown:translate-x-0.5
       peer-not-placeholder-shown:-translate-y-1.5
       peer-not-placeholder-shown:text-gray-500 dark:peer-not-placeholder-shown:text-neutral-500 dark:text-neutral-500">{{label()}}</label>
-      @if (formHelpers.findError(abstractControl()) && abstractControl().touched) {
+      @if (abstractControl().touched) {
         <p class="text-red-500 text-xs">{{formHelpers.showError(formGroup().controls[name()])}}</p>
       }
 </div>

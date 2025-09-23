@@ -11,7 +11,7 @@ import { ModalComponent } from "../../components/Modal/Modal.component";
 
 @Component({
   selector: 'app-index-page',
-  imports: [NoteElementComponent, ModalTriggerComponent, ModalComponent],
+  imports: [NoteElementComponent],
   templateUrl: './index-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
