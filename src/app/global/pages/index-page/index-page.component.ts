@@ -5,10 +5,13 @@ import { NotesService } from '../../../notes/services/Notes.service';
 import { PaginatedResource } from '../../interfaces/paginated-resource';
 import { NoteInterface } from '../../../notes/interfaces/note.interface';
 import { NoteElementComponent } from "../../../notes/components/note-element/note-element.component";
+import { ResumeNotePipe } from '../../pipes/ResumeNote.pipe';
+import { ModalTriggerComponent } from "../../components/modal-trigger/modal-trigger.component";
+import { ModalComponent } from "../../components/Modal/Modal.component";
 
 @Component({
   selector: 'app-index-page',
-  imports: [NoteElementComponent],
+  imports: [NoteElementComponent, ModalTriggerComponent, ModalComponent],
   templateUrl: './index-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

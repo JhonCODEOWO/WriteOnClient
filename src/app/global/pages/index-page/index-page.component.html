@@ -2,7 +2,7 @@
 
 <section class="mt-5">
     @if (paginatedNotes()) {
-    <div class="flex flex-col gap-y-5">
+    <div class="flex flex-col gap-y-5 md:grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         @for (note of paginatedNotes()?.data; track note.id) {
         <note-element [note]="note" />
         } @empty {

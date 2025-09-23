@@ -1,6 +1,6 @@
-<form class="w-[80%] mx-auto dark:bg-neutral-800 rounded-xl backdrop-blur-lg shadow-lg overflow-hidden"
+<form class="w-[80%] mx-auto dark:bg-neutral-800 rounded-xl backdrop-blur-lg shadow-lg overflow-hidden md:grid md:grid-cols-2"
     [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <img src="image.png" alt="" class="object-cover w-full">
+    <img src="image.png" alt="" class="object-cover w-full h-full">
     <div class="p-5">
         <h1 class="mb-8 text-white text-center">Inicia sesión</h1>
         @if (error() && !loading()) {

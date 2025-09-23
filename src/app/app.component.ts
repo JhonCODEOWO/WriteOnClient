@@ -13,10 +13,5 @@ export class AppComponent implements OnInit{
 
   
   ngOnInit() {
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd) {
-        setTimeout(() => window.HSStaticMethods.autoInit(), 100);
-      }
-    });
   }
 }
