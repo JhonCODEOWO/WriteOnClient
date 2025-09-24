@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { NoteInterface } from '../../interfaces/note.interface';
 import { ResumeNotePipe } from '../../../global/pipes/ResumeNote.pipe';
 import { ModalComponent } from "../../../global/components/Modal/Modal.component";
@@ -7,10 +7,12 @@ import { TagInterface } from '../../../tags/interfaces/tag.interface';
 import { TagsService } from '../../../tags/services/tags.service';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormHelper } from '../../../global/helpers/form-helpers';
+import { LoaderComponent } from '../../../global/components/loader/loader.component';
+import { TagsNote } from '../../interfaces/tags-note.interface';
 
 @Component({
   selector: 'note-element',
-  imports: [ResumeNotePipe, ModalComponent, ModalTriggerComponent, ReactiveFormsModule],
+  imports: [ResumeNotePipe, ModalComponent, ModalTriggerComponent, ReactiveFormsModule, LoaderComponent],
   templateUrl: './note-element.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -25,6 +27,7 @@ export class NoteElementComponent {
   tags = signal<null | TagInterface[]>(null);
   note = input.required<NoteInterface>();
   tagService = inject(TagsService);
+  appliedTags = output<TagsNote>() //Event to emit all tags added correctly
 
   //Handle modal triggered
   handleTriggerClicked(){
@@ -32,7 +35,7 @@ export class NoteElementComponent {
       next: (tags) => {
         this.tags.set(tags);
       }
-    }); //Try load all tags to show
+    }); //Try load all tags to show inside the form
   }
 
   get tagsControl(){
@@ -53,6 +56,13 @@ export class NoteElementComponent {
   onSubmit(){
     this.tagsForm.markAllAsTouched();
     if(this.tagsForm.invalid) return;
-    
+    //Get all tags.
+    const tags = this.tagsControl.value;
+    this.appliedTags.emit({noteId: this.note().id, tags: tags});
+  }
+
+  //Handle cancel from modal component
+  handleCancel(){
+    this.tags.set(null);
   }
 }

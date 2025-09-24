@@ -14,7 +14,7 @@
                         <path fill="currentColor" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" />
                     </svg>
                 </app-modal-trigger>
-                <app-modal [id]="note().id" [title]="'Editando tags de ' + note().title" (saveChanges)="onSubmit()">
+                <app-modal [id]="note().id" [title]="'Editando tags de ' + note().title" (saveChanges)="onSubmit()" (cancel)="handleCancel()">
                     <form [formGroup]="tagsForm">
                         <div class="grid grid-cols-2" formArrayName="tags">
                             @if (tags()) {
@@ -24,13 +24,17 @@
                                 <li (click)="pushTag(tag)" class="cursor-pointer">{{tag.name}}</li>
                                 }
                             </ul>
+                            } @else {
+                                <app-loader/>
                             }
                             <ul>
                                 <h3 class="text-lg">Tags asignados</h3>
                                 @for (tag of tagsControl.controls; track $index; let i = $index) {
                                 <li [formGroupName]="i" class="flex justify-between">
                                     {{tag.value.name}}
-                                    <button (click)="deleteTag(tag)">Eliminar</button>
+                                    <button (click)="deleteTag(tag)" class="text-red-500 cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6q-.425 0-.712-.288T4 5t.288-.712T5 4h4q0-.425.288-.712T10 3h4q.425 0 .713.288T15 4h4q.425 0 .713.288T20 5t-.288.713T19 6v13q0 .825-.587 1.413T17 21zm3-4q.425 0 .713-.288T11 16V9q0-.425-.288-.712T10 8t-.712.288T9 9v7q0 .425.288.713T10 17m4 0q.425 0 .713-.288T15 16V9q0-.425-.288-.712T14 8t-.712.288T13 9v7q0 .425.288.713T14 17"/></svg>
+                                    </button>
                                 </li>
                                 }
                                 @if (formHelpers.showError(tagsForm.controls.tags) && tagsForm.controls.tags.touched) {
