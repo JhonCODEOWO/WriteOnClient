@@ -14,6 +14,10 @@ export class NotesService {
   url = `${environment.API_URL}/notes`;
   client = inject(HttpClient);
 
+  create(body: NoteResourceRequest): Observable<NoteInterface>{
+    return this.client.post<NoteInterface>(`${this.url}/create`, body);
+  }
+
   findAll(): Observable<PaginatedResource<NoteInterface>>{
     return this.client.get<PaginatedResource<NoteInterface>>(`${this.url}`);
   }

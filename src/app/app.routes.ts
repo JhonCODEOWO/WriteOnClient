@@ -12,6 +12,11 @@ export const routes: Routes = [
         loadChildren: () => import('./auth/auth.routes'),
     },
     {
+        path: 'notes',
+        loadChildren: () => import('./notes/notes.routes'),
+        canMatch: [isLoggedGuard]
+    },
+    {
         path: '',
         component: PrincipalLayoutComponent,
         children: [

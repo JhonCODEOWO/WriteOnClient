@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-loader',
   imports: [],
   template: ` <div
-    class="animate-spin inline-block size-12 border-3 border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
+    class="animate-spin inline-block size-8 md:size-12 border-3 border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
     role="status"
     aria-label="loading"
   >
@@ -13,4 +13,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './loader.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoaderComponent {}
+export class LoaderComponent {
+  
+}

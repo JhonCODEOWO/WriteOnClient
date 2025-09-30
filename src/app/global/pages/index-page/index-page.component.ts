@@ -5,7 +5,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../auth/services/AuthService.service';
 import { NotesService } from '../../../notes/services/Notes.service';
 import { PaginatedResource } from '../../interfaces/paginated-resource';
@@ -17,7 +17,7 @@ import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-index-page',
-  imports: [NoteElementComponent, LoaderComponent, NgClass],
+  imports: [NoteElementComponent, LoaderComponent, NgClass, RouterLink],
   templateUrl: './index-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
