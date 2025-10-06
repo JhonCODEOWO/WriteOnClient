@@ -6,6 +6,7 @@
 
 /* Plugins */
 @plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
 
 h1 {
     @apply text-3xl md:text-4xl font-bold
@@ -16,9 +17,60 @@ h1 {
 }
 
 .button {
-    @apply p-3 cursor-pointer disabled:cursor-not-allowed inline-block
+    @apply p-1.5 cursor-pointer disabled:cursor-not-allowed flex gap-x-1 rounded items-center
 }
 
 .button-error {
     @apply bg-red-500 dark:bg-red-600 text-white rounded
 }
+
+.button-info{
+    @apply bg-blue-500 dark:to-blue-600 text-white
+}
+
+.button-success {
+    @apply bg-green-500 dark:bg-green-600 text-white;
+}
+
+.divider {
+    @apply h-[1.2px] bg-neutral-600/40 my-2
+}
+
+/* QUILL */
+.ql-toolbar {
+    @apply bg-neutral-900;
+}
+
+.ql-toolbar.ql-snow {
+    @apply !border-neutral-700
+}
+
+.ql-container.ql-snow{
+    @apply !border-neutral-700
+}
+
+.ql-editor{
+    @apply bg-neutral-900 text-neutral-400;
+}
+
+.ql-snow .ql-picker-options {
+    @apply dark:!bg-neutral-800
+}
+
+.ql-snow .ql-picker{
+    @apply dark:!text-white
+}
+
+/* .ql-toolbar .ql-stroke {
+    fill: none;
+    @apply dark:!stroke-white;
+}
+
+.ql-toolbar .ql-fill {
+    @apply dark:!fill-white stroke-none;
+}
+
+.ql-toolbar .ql-picker {
+    @apply !text-white;
+} */
+

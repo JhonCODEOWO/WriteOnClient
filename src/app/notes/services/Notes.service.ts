@@ -18,6 +18,10 @@ export class NotesService {
     return this.client.post<NoteInterface>(`${this.url}/create`, body);
   }
 
+  find(id: string): Observable<NoteInterface>{
+    return this.client.get<NoteInterface>(`${this.url}/${id}`);
+  }
+
   findAll(): Observable<PaginatedResource<NoteInterface>>{
     return this.client.get<PaginatedResource<NoteInterface>>(`${this.url}`);
   }

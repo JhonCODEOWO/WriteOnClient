@@ -11,10 +11,11 @@ import { LoaderComponent } from '../../../global/components/loader/loader.compon
 import { TagsNote } from '../../interfaces/tags-note.interface';
 import { NotesService } from '../../services/Notes.service';
 import { InputComponentComponent } from "../../../global/components/input-component/input-component.component";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'note-element',
-  imports: [ResumeNotePipe, ModalComponent, ModalTriggerComponent, ReactiveFormsModule, LoaderComponent, InputComponentComponent],
+  imports: [ResumeNotePipe, ModalComponent, ModalTriggerComponent, ReactiveFormsModule, LoaderComponent, InputComponentComponent, RouterLink],
   templateUrl: './note-element.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -67,7 +68,7 @@ export class NoteElementComponent {
   //Manage tags from form
   deleteTag(tag: AbstractControl){
     const index = this.tagsControl.controls.findIndex((group) => group.value.id === tag.value.id);
-    this.tagsControl.removeAt(index)
+    this.tagsControl.removeAt(index);
   }
 
   //Method that execute a delete operation in backend

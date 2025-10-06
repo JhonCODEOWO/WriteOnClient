@@ -1,4 +1,4 @@
-import { AbstractType, ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { AbstractType, ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormHelper } from '../../helpers/form-helpers';
 
@@ -13,6 +13,8 @@ export class InputComponentComponent {
   name = input.required<string>();
   label = input.required<string>();
   formHelpers = FormHelper;
+  styleType = input<'floating-label' | 'underline'>('floating-label');
+  optionalClasses = input<string>('');
 
   abstractControl = computed(() => {
     return this.formGroup().controls[this.name()]
