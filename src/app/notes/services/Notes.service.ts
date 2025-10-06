@@ -26,6 +26,10 @@ export class NotesService {
     return this.client.post<NoteInterface>(`${this.url}/update/${idNote}`, {_method: 'PATCH',...body});
   }
 
+  delete(idNote: string): Observable<boolean>{
+    return this.client.delete<boolean>(`${this.url}/${idNote}`);
+  }
+
   deleteTag(idNote: string, idTag: string): Observable<GenericResponseInterface>{
     return this.client.delete<GenericResponseInterface>(`${this.url}/${idNote}/${idTag}`);
   }

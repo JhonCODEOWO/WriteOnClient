@@ -53,4 +53,12 @@ export class IndexPageComponent{
       return { ...actual, data: [...copyData] }; //Return a copy of all data with only the note modified
     });
   }
+
+  handleDeletedNote(idNote: string){
+    this.paginatedNotes.update(actual => {
+      if(!actual) return null;
+      const filtering = actual.data.filter(note => note.id != idNote);
+      return {...actual, data: [...filtering]}
+    })
+  }
 }

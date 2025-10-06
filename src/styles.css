@@ -14,3 +14,11 @@ h1 {
 .link {
     @apply text-blue-600 dark:text-neutral-200 hover:underline
 }
+
+.button {
+    @apply p-3 cursor-pointer disabled:cursor-not-allowed inline-block
+}
+
+.button-error {
+    @apply bg-red-500 dark:bg-red-600 text-white rounded
+}

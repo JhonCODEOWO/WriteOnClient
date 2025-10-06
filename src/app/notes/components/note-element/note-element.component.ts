@@ -35,6 +35,7 @@ export class NoteElementComponent {
   tagService = inject(TagsService);
   noteService = inject(NotesService);
   appliedTags = output<TagsNote>() //Event to emit all tags added correctly
+  deletedNote = output<string>(); //Event to emit when a note is deleted
 
   //Handle modal triggered by ModalTrigger component
   handleTriggerClicked(){
@@ -67,6 +68,13 @@ export class NoteElementComponent {
   deleteTag(tag: AbstractControl){
     const index = this.tagsControl.controls.findIndex((group) => group.value.id === tag.value.id);
     this.tagsControl.removeAt(index)
+  }
+
+  //Method that execute a delete operation in backend
+  delete(id: string){
+    this.noteService.delete(id).subscribe(response => {
+      if(response) this.deletedNote.emit(id)
+    });
   }
 
   onSubmit(){
