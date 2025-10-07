@@ -1,6 +1,12 @@
 # WriteOn Client 🌐
 A client example in Angular that interacts with the Backend of WriteOn, feel free to improve it and use it to try and get involved with the API in a easiest way.
 
+## Incoming changes 🚚
+We are working on make this a better demo about how use WriteOn API stay tunned to check new additions.
+
+- Collaborative edition of notes in realtime
+- New design of UI
+
 ## Notes 📄
 * Before use the project be sure of install and run WriteOn backend in your computer, you can download it [here](https://github.com/JhonCODEOWO/WriteOn) and read all docs to implement it correctly.
 
