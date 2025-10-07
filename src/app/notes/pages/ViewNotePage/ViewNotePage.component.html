@@ -5,17 +5,36 @@
     <div class="w-full">
         <div [ngClass]="{'flex': !editing()}">
             @switch (editing()) {
-                @case (false) {
-                    <div class="py-5 px-2">
-                        <h1 class="tracking-tight" (dblclick)="toggleEdition()">{{note()?.title}}</h1>
-                        <p class="text-xm">{{note()?.tags?.join(', ')}}</p>
-                    </div>
-                }
-                @case (true) {
-                    <div class="py-5 px-2">
-                        <app-input-component [formGroup]="updateNoteForm" name="title" label="Titulo de la nota" inputType="text" styleType="underline"/>
-                    </div>
-                }
+            @case (false) {
+            <section class="py-5 px-2 flex justify-between w-full items-center">
+                <div>
+                    <h1 class="tracking-tight" (dblclick)="toggleEdition()">{{note()?.title}}</h1>
+                    <p class="text-xm">{{note()?.tags?.join(', ')}}</p>
+                </div>
+                <div>
+                    @if (note()?.is_shared) {
+                        <h2 class="text-sm text-neutral-300 mb-1">En línea</h2>
+                    <ul class="flex">
+                        @for (collaborator of collaboratorsInWorkspace(); track collaborator.id) {
+                        <li>
+                            <app-profile-image [name]="collaborator.name" />
+                        </li>
+                        } @empty {
+                            <li class="text-xs">Sin conexiones</li>
+                        }
+                    </ul>
+                    } @else {
+                        <p class="text-xs">⚠️ No se está compartiendo</p>
+                    }
+                </div>
+            </section>
+            }
+            @case (true) {
+            <div class="py-5 px-2">
+                <app-input-component [formGroup]="updateNoteForm" name="title" label="Titulo de la nota"
+                    inputType="text" styleType="underline" />
+            </div>
+            }
             }
         </div>
     </div>
@@ -23,27 +42,27 @@
     <section class="transition-all duration-300 ease-in-out">
         <!-- Show elements if editing is true or false -->
         @switch (editing()) {
-            @case (false) {
-                <div class="prose dark:prose-invert p-2 min-h-[40vh] max-h-[60vh] w-full break-words overflow-hidden" [innerHTML]="note()?.content" (dblclick)="toggleEdition()"></div>
-            }
-            @case (true) {
-                <!-- TextBox to insert data using event writing -->
-                <app-rich-text-box [initialText]="note()?.content ?? ''" (writingContent)="handleWritingContent($event)"/>
-                <!-- Show errors in control content -->
-                @if (updateNoteForm.controls.content.touched && formHelpers.showError(updateNoteForm.controls.content)) {
-                    <p>{{formHelpers.showError(updateNoteForm.controls.content)}}</p>
-                }
+        @case (false) {
+        <div class="prose dark:prose-invert p-2 min-h-[40vh] max-h-[60vh] w-full break-words overflow-hidden"
+            [innerHTML]="note()?.content" (dblclick)="toggleEdition()"></div>
+        }
+        @case (true) {
+        <!-- TextBox to insert data using event writing -->
+        <app-rich-text-box [initialText]="note()?.content ?? ''" (writingContent)="handleWritingContent($event)" />
+        <!-- Show errors in control content -->
+        @if (updateNoteForm.controls.content.touched && formHelpers.showError(updateNoteForm.controls.content)) {
+        <p>{{formHelpers.showError(updateNoteForm.controls.content)}}</p>
+        }
 
-            }
+        }
         }
         @if(editing()){
-            <div class="mt-3">
-                <!-- Toggle button -->
-                <button class="button button-success text-xs"
-                    (click)="updateNote()">
-                    <span class="text-xs">Guardar cambios</span>
-                </button>
-            </div>
+        <div class="mt-3">
+            <!-- Toggle button -->
+            <button class="button button-success text-xs" (click)="updateNote()">
+                <span class="text-xs">Guardar cambios</span>
+            </button>
+        </div>
         }
     </section>
 
