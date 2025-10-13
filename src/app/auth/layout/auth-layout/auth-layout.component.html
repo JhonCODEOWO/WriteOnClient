@@ -1,7 +1,15 @@
 <section
-  class="relative min-w-full min-h-[100dvh] flex items-center justify-center bg-[url(/image.webp)] bg-cover bg-center"
->
-  <div class="absolute inset-0 bg-black/55"></div>
+  class="relative min-w-full min-h-[100dvh] flex items-center justify-center
+         bg-[url('/image.webp')] bg-cover bg-center">
 
-  <div class="relative w-full z-10"><router-outlet /></div>
+  <div
+    class="absolute inset-0
+           bg-gradient-to-br from-slate-900/40 via-slate-900/60 to-indigo-900/50
+           dark:from-slate-950/70 dark:via-blue-950/60 dark:to-slate-900/80
+           backdrop-blur-md">
+  </div>
+
+  <div class="relative z-10 w-full flex items-center justify-center px-4">
+    <router-outlet />
+  </div>
 </section>
