@@ -1,5 +1,7 @@
-<section class="min-w-full min-h-[100dvh] flex items-center justify-center dark:bg-black bg-no-repeat bg-cover">
-    <div class="w-full">
-        <router-outlet/>
-    </div>
+<section
+  class="relative min-w-full min-h-[100dvh] flex items-center justify-center bg-[url(/image.webp)] bg-cover bg-center"
+>
+  <div class="absolute inset-0 bg-black/55"></div>
+
+  <div class="relative w-full z-10"><router-outlet /></div>
 </section>
