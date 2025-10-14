@@ -8,6 +8,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
     <button
       (click)="onClick()"
       type="button"
+      class="cursor-pointer"
       [ngClass]="class()"
       aria-haspopup="dialog"
       aria-expanded="false"
