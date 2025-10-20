@@ -11,10 +11,11 @@ import {
   selector: 'app-profile-image',
   imports: [],
   template: `<span
-    class="inline-flex items-center justify-center size-11 rounded-full font-semibold text-white"
-    style="background-color: {{ bgColor() }}"
+    class="inline-flex items-center justify-center size-11 rounded-full font-semibold text-white tooltip"
+    style="background-color: {{ bgColor() }} "
   >
     {{ initials() }}
+    <p class="tooltip-text">{{name()}}</p>
   </span>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

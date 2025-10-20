@@ -37,4 +37,8 @@ export class NotesService {
   deleteTag(idNote: string, idTag: string): Observable<GenericResponseInterface>{
     return this.client.delete<GenericResponseInterface>(`${this.url}/${idNote}/${idTag}`);
   }
+
+  addCollaborators(body: {collaborators: string[]}, noteID: string): Observable<boolean>{
+    return this.client.post<boolean>(`${this.url}/add_collaborators/${noteID}`, body);
+  }
 }

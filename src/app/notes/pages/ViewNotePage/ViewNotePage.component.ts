@@ -1,23 +1,28 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop'
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom, map } from 'rxjs';
 import { NotesService } from '../../services/Notes.service';
 import { NoteInterface } from '../../interfaces/note.interface';
 import { LoaderComponent } from '../../../global/components/loader/loader.component';
 import { NgClass } from '@angular/common';
 import { RichTextBoxComponent } from '../../../global/components/rich-text-box/rich-text-box.component';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputComponentComponent } from '../../../global/components/input-component/input-component.component';
 import { FormHelper } from '../../../global/helpers/form-helpers';
 import { NoteResourceRequest } from '../../interfaces/note-request';
 import { LaravelBroadcastingService } from '../../../global/services/laravel-broadcasting.service';
 import { CollaboratorInterface } from '../../../collaborators/interfaces/collaborator-interface';
 import { ProfileImageComponent } from "../../../global/components/profile-image/profile-image.component";
+import { ModalTriggerComponent } from "../../../global/components/modal-trigger/modal-trigger.component";
+import { ModalComponent } from "../../../global/components/Modal/Modal.component";
+import { CollaboratorsService } from '../../../collaborators/services/Collaborators.service';
+import { CollaboratorComponent } from '../../../collaborators/components/Collaborator/Collaborator.component';
+import { isUUID } from '../../../global/validators/is-uuid.directive';
 
 @Component({
   selector: 'app-view-note-page',
-  imports: [LoaderComponent, NgClass, RichTextBoxComponent, ReactiveFormsModule, InputComponentComponent, ProfileImageComponent],
+  imports: [LoaderComponent, NgClass, RichTextBoxComponent, ReactiveFormsModule, InputComponentComponent, ProfileImageComponent, ModalTriggerComponent, ModalComponent, CollaboratorComponent],
   templateUrl: './ViewNotePage.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -25,17 +30,40 @@ export class ViewNotePageComponent{
   fb = inject(FormBuilder);
   route = inject(ActivatedRoute);
   noteService = inject(NotesService);
+  collaboratorsService = inject(CollaboratorsService);
   broadcastService = inject(LaravelBroadcastingService);
   formHelpers = FormHelper;
 
   noteId = toSignal(this.route.paramMap.pipe(map(params => params.get('id'))));
   note = signal<NoteInterface | null>(null);
+  collaboratorsInNote = computed<undefined | {main: CollaboratorInterface[], hidden: CollaboratorInterface[]}>(() => {
+    
+    if(!this.note()) return;
+    
+    let splitted: {main: CollaboratorInterface[], hidden: CollaboratorInterface[]} = {main: [], hidden: []};
+    const collaborators = this.note()?.collaborators;
+    
+    if(collaborators!.length < 5){
+      splitted.main = collaborators ?? [];
+      return splitted;
+    }
+    
+    splitted.main = collaborators?.slice(0, 4) ?? [];
+    splitted.hidden = collaborators?.slice(4) ?? [];
+    return splitted;
+  });
+  collaborators = signal<CollaboratorInterface[]>([]);
+  collaboratorsAvailable = computed(()=> {
+    return this.collaborators().filter(collaborator => !this.note()?.collaborators.map(col => col.id).includes(collaborator.id));
+  });
   loading = signal<boolean>(false);
   editing = signal<boolean>(false);
-  collaboratorsInWorkspace = signal<CollaboratorInterface[]>([]);
+  collaboratorsInWorkspace = signal<CollaboratorInterface[]>([]); //Data about collaborators online in this workspace
 
+  //Make subscription to the presence channel
   listenForChanges = effect(onCleanup => {
     if(!this.note()) return;
+    console.log('Dentro de listen for changes');
     this.broadcastService.echo()?.join(`note.${this.note()?.id}`)
         .listen('UpdateNote', (e: {note: NoteInterface}) => {
           this.note.set(e.note);
@@ -55,12 +83,21 @@ export class ViewNotePageComponent{
     })
   });
 
-  //Form
+  //Forms
   updateNoteForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(8)]],
     content: ['', [Validators.required]]
   })
 
+  collaboratorsForm = this.fb.group({
+    collaborators: this.fb.array<FormControl<CollaboratorInterface>>(
+      [],
+      [Validators.required]
+    ),
+    note: ['', [Validators.required, isUUID]],
+  });
+
+  //Get note from the 
   findNote = effect(onCleanup => {
     if(!this.noteId()) return;
     this.loading.set(true);
@@ -76,6 +113,10 @@ export class ViewNotePageComponent{
       this.note.set(null);
     })
   })
+
+  get collaboratorsControl(){
+    return this.collaboratorsForm.get('collaborators') as FormArray<FormControl<CollaboratorInterface>>;
+  }
 
   updateSharing(idNote: string){
     let newState = !this.note()?.is_shared;
@@ -103,7 +144,50 @@ export class ViewNotePageComponent{
         this.editing.set(false);
   }
 
+  markCollaborator(collaborator: CollaboratorInterface, checkbox: HTMLInputElement){
+    if (!checkbox.checked) {
+      const index = this.collaboratorsControl.controls.findIndex(
+        (control) => control.value.id === collaborator.id
+      );
+      this.collaboratorsControl.removeAt(index);
+      return;
+    }
+
+    const collaboratorControl = this.fb.control(collaborator, {
+      nonNullable: true,
+      validators: [Validators.required],
+    });
+
+    this.collaboratorsControl.push(collaboratorControl);
+  }
+
+  onSubmitCollaborators(){
+    this.collaboratorsForm.markAllAsTouched();
+    if(this.collaboratorsForm.invalid) return;
+    const value = {...this.collaboratorsForm.value};
+
+    this.noteService.addCollaborators({collaborators: value.collaborators?.map(collaborator => collaborator.id) ?? []}, value.note ?? '').subscribe({
+      next: (res) => {
+        if(res) {
+          this.note.update((actual) => {
+          if(!actual) return null;
+
+          return {...actual, collaborators: [...actual.collaborators, ...value.collaborators ?? []]}
+          });
+
+          this.collaboratorsControl.clear();
+          this.collaborators.set([]);
+        }
+      }
+    });
+  }
+
   handleWritingContent(content: string){
     this.updateNoteForm.patchValue({content});
+  }
+
+  handleClickedTrigger(){
+    this.collaboratorsForm.controls.note.patchValue(this.noteId() ?? '');
+    this.collaboratorsService.all().subscribe(res => this.collaborators.set(res.data));
   }
 }

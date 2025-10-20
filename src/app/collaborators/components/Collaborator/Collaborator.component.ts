@@ -12,6 +12,7 @@ import { CollaboratorInterface } from '../../interfaces/collaborator-interface';
                 <span class="font-semibold text-lg text-neutral-800 dark:text-white">{{collaborator().name}}</span>
                 <span class="text-sm text-neutral-500 dark:text-neutral-400">{{collaborator().email}}</span>
             </div>
+            <ng-content/>
   </li>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -24,7 +24,7 @@ h1 {
     @apply bg-red-500 dark:bg-red-600 text-white rounded
 }
 
-.button-info{
+.button-info {
     @apply bg-blue-500 dark:to-blue-600 text-white
 }
 
@@ -45,20 +45,41 @@ h1 {
     @apply !border-neutral-700
 }
 
-.ql-container.ql-snow{
+.ql-container.ql-snow {
     @apply !border-neutral-700
 }
 
-.ql-editor{
+.ql-editor {
     @apply bg-neutral-900 text-neutral-400;
 }
 
 .ql-snow .ql-picker-options {
-    @apply dark:!bg-neutral-800
+    @apply dark:!bg-neutral-800;
 }
 
-.ql-snow .ql-picker{
-    @apply dark:!text-white
+.ql-snow .ql-picker {
+    @apply dark:!text-white;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tooltip-text {
+    position: absolute;
+    visibility: hidden;
+    display: block;
+    width: fit-content;
+    top: 53px;
+    z-index: 1000;
+    @apply bg-neutral-500 rounded p-3;
+}
+
+.tooltip:hover .tooltip-text {
+    visibility: visible;
 }
 
 /* .ql-toolbar .ql-stroke {
@@ -73,4 +94,3 @@ h1 {
 .ql-toolbar .ql-picker {
     @apply !text-white;
 } */
-

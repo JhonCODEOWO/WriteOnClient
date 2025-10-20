@@ -8,23 +8,92 @@
             @case (false) {
             <section class="py-5 px-2 flex justify-between w-full items-center">
                 <div>
-                    <h1 class="tracking-tight" (dblclick)="toggleEdition()">{{note()?.title}}</h1>
+                    <div class="flex items-center gap-x-4">
+                        <h1 class="tracking-tight" (dblclick)="toggleEdition()">{{note()?.title}}</h1>
+                        <app-modal-trigger modalId="addCollaborators" class="bg-green-700 rounded-full p-1"
+                            (clicked)="handleClickedTrigger()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="M12.5 11.95q.725-.8 1.113-1.825T14 8t-.387-2.125T12.5 4.05q1.5.2 2.5 1.325T16 8t-1 2.625t-2.5 1.325M17.45 20q.275-.45.413-.962T18 18v-1q0-.9-.4-1.713t-1.05-1.437q1.275.45 2.363 1.163T20 17v1q0 .825-.587 1.413T18 20zM20 11h-1q-.425 0-.712-.288T18 10t.288-.712T19 9h1V8q0-.425.288-.712T21 7t.713.288T22 8v1h1q.425 0 .713.288T24 10t-.288.713T23 11h-1v1q0 .425-.288.713T21 13t-.712-.288T20 12zM8 12q-1.65 0-2.825-1.175T4 8t1.175-2.825T8 4t2.825 1.175T12 8t-1.175 2.825T8 12m-8 6v-.8q0-.85.438-1.562T1.6 14.55q1.55-.775 3.15-1.162T8 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T16 17.2v.8q0 .825-.587 1.413T14 20H2q-.825 0-1.412-.587T0 18" />
+                            </svg>
+                        </app-modal-trigger>
+
+                        <app-modal id="addCollaborators" title="Añadir colaboradores a esta nota">
+                            <h2 class="text-sm">Selecciona los colaboradores que deseas añadir</h2>
+                            <ul class="max-h-[20rem] overflow-y-auto py-3">
+                                @if (collaboratorsControl.touched) {
+                                <p class="text-red-500">{{formHelpers.showError(collaboratorsControl)}}</p>
+                                }
+                                @for (collaborator of collaboratorsAvailable(); track $index) {
+                                <collaborator-element [collaborator]="collaborator">
+                                    <label class="inline-flex items-center cursor-pointer group">
+                                        <input type="checkbox"
+                                            class="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-md bg-white checked:bg-blue-600 checked:border-blue-600 transition-all duration-200 focus:ring-2 focus:ring-blue-400 dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500"
+                                            id="hs-checked-checkbox" (change)="markCollaborator(collaborator, checkbox)"
+                                            #checkbox>
+                                        <span
+                                            class="absolute w-5 h-5 flex items-center justify-center pointer-events-none">
+                                            <svg class="opacity-0 peer-checked:opacity-100 transition-opacity duration-200 text-white"
+                                                width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                                <path d="M5 9l3 3 5-5" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </span>
+                                    </label>
+                                </collaborator-element>
+                                }
+                            </ul>
+
+                            <button class="button button-success mt-5" (click)="onSubmitCollaborators()">Añadir
+                                seleccionados</button>
+                        </app-modal>
+                    </div>
                     <p class="text-xm">{{note()?.tags?.join(', ')}}</p>
+                    <div class="mt-5">
+                        <h3 class="text-xs mb-1">Colaboradores:</h3>
+                        <div class="flex items-center">
+                            @if (collaboratorsInNote()) {
+                            @for (collaborator of collaboratorsInNote()?.main; track collaborator.id; let i = $index) {
+                            <app-profile-image [name]="collaborator.name" class="mr-[-8px]" />
+                            } @empty {
+                            <p class="text-xs text-red-400">Sin colaboradores</p>
+                            }
+                            @if (collaboratorsInNote()!.hidden!.length > 0) {
+                            <p class="tooltip h-[44px] w-[44px] bg-neutral-400 rounded-full">
+                                ...
+                                <span class="tooltip-text">
+                                    @for (item of collaboratorsInNote()?.hidden; track $index) {
+                                    {{item.name}},
+                                    }
+                                </span>
+                            </p>
+                            }
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        <p class="flex items-center gap-x-3 text-xs">
+                            <span>Compartiendo nota: </span>
+                            <span (click)="updateSharing(note()?.id ?? '')"
+                                class="cursor-pointer w-4 h-4 inline-block rounded-full animate-pulse"
+                                [ngClass]="{'bg-green-500': note()?.is_shared, 'bg-red-500': !note()?.is_shared}"></span>
+                        </p>
+                    </div>
                 </div>
                 <div>
                     @if (note()?.is_shared) {
-                        <h2 class="text-sm text-neutral-300 mb-1">En línea</h2>
+                    <h2 class="text-sm text-neutral-300 mb-1">En línea</h2>
                     <ul class="flex">
                         @for (collaborator of collaboratorsInWorkspace(); track collaborator.id) {
                         <li>
                             <app-profile-image [name]="collaborator.name" />
                         </li>
                         } @empty {
-                            <li class="text-xs">Sin conexiones</li>
+                        <li class="text-xs">Sin conexiones</li>
                         }
                     </ul>
                     } @else {
-                        <p class="text-xs">⚠️ No se está compartiendo</p>
+                    <p class="text-xs">⚠️ No se está compartiendo</p>
                     }
                 </div>
             </section>
@@ -43,7 +112,7 @@
         <!-- Show elements if editing is true or false -->
         @switch (editing()) {
         @case (false) {
-        <div class="prose dark:prose-invert p-2 min-h-[40vh] max-h-[60vh] w-full break-words overflow-hidden"
+        <div class="prose max-w-none dark:prose-invert p-2 min-h-[40vh] w-full break-words overflow-hidden xl:overflow-visible"
             [innerHTML]="note()?.content" (dblclick)="toggleEdition()"></div>
         }
         @case (true) {
@@ -67,12 +136,5 @@
     </section>
 
     <div class="divider"></div>
-    <div>
-        <p class="flex items-center justify-center gap-x-2">
-            Compartiendo nota: <span (click)="updateSharing(note()?.id ?? '')"
-                class="cursor-pointer w-4 h-4 inline-block rounded-full animate-pulse"
-                [ngClass]="{'bg-green-500': note()?.is_shared, 'bg-red-500': !note()?.is_shared}"></span>
-        </p>
-    </div>
 </main>
 }
