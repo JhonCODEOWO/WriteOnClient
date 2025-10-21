@@ -6,6 +6,7 @@ import { NoteInterface } from '../interfaces/note.interface';
 import { HttpClient } from '@angular/common/http';
 import { NoteResourceRequest } from '../interfaces/note-request';
 import { GenericResponseInterface } from '../../global/interfaces/generic-response';
+import { CollaboratorInterface } from '../../collaborators/interfaces/collaborator-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -40,5 +41,9 @@ export class NotesService {
 
   addCollaborators(body: {collaborators: string[]}, noteID: string): Observable<boolean>{
     return this.client.post<boolean>(`${this.url}/add_collaborators/${noteID}`, body);
+  }
+
+  dropCollaborator(noteID: string, collaboratorID: CollaboratorInterface): Observable<boolean>{
+    return this.client.delete<boolean>(`${this.url}/collaborators/${noteID}/${collaboratorID.id}`);
   }
 }

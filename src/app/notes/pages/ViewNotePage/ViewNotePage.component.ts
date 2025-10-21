@@ -199,4 +199,16 @@ export class ViewNotePageComponent{
   isTheOwner(): boolean{
     return this.authService._userAuthenticated()?.id === this.note()?.owner.id;
   }
+
+  //Delete a collaborator from the resource if it is successfully then update note.
+  deleteCollaborator(collaborator: CollaboratorInterface, noteID: string){
+    this.noteService.dropCollaborator(noteID, collaborator).subscribe({
+      next: (res) => {
+        if(res) this.note.update((actual) => {
+          if(!actual) return null;
+          return {...actual, collaborators: [...actual.collaborators.filter(actual_collaborator => collaborator.id != actual_collaborator.id)]}
+        })
+      }
+    });
+  }
 }
