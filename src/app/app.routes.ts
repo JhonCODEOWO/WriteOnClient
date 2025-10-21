@@ -17,6 +17,11 @@ export const routes: Routes = [
         canMatch: [isLoggedGuard]
     },
     {
+        path: 'collaborators',
+        loadChildren: () => import('./collaborators/collaborators.routes'),
+        canMatch: [isLoggedGuard]
+    },
+    {
         path: '',
         component: PrincipalLayoutComponent,
         children: [
