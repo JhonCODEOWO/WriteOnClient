@@ -19,6 +19,7 @@ import { ModalComponent } from "../../../global/components/Modal/Modal.component
 import { CollaboratorsService } from '../../../collaborators/services/Collaborators.service';
 import { CollaboratorComponent } from '../../../collaborators/components/Collaborator/Collaborator.component';
 import { isUUID } from '../../../global/validators/is-uuid.directive';
+import { AuthService } from '../../../auth/services/AuthService.service';
 
 @Component({
   selector: 'app-view-note-page',
@@ -32,6 +33,7 @@ export class ViewNotePageComponent{
   noteService = inject(NotesService);
   collaboratorsService = inject(CollaboratorsService);
   broadcastService = inject(LaravelBroadcastingService);
+  authService = inject(AuthService);
   formHelpers = FormHelper;
 
   noteId = toSignal(this.route.paramMap.pipe(map(params => params.get('id'))));
@@ -63,7 +65,6 @@ export class ViewNotePageComponent{
   //Make subscription to the presence channel
   listenForChanges = effect(onCleanup => {
     if(!this.note()) return;
-    console.log('Dentro de listen for changes');
     this.broadcastService.echo()?.join(`note.${this.note()?.id}`)
         .listen('UpdateNote', (e: {note: NoteInterface}) => {
           this.note.set(e.note);
@@ -97,7 +98,7 @@ export class ViewNotePageComponent{
     note: ['', [Validators.required, isUUID]],
   });
 
-  //Get note from the 
+  //Get noteID string from the url
   findNote = effect(onCleanup => {
     if(!this.noteId()) return;
     this.loading.set(true);
@@ -118,13 +119,16 @@ export class ViewNotePageComponent{
     return this.collaboratorsForm.get('collaborators') as FormArray<FormControl<CollaboratorInterface>>;
   }
 
+  //TODO: ADD NOTIFICATION TO NOT OWNER USERS
   updateSharing(idNote: string){
+    if(!this.isTheOwner()) return;
     let newState = !this.note()?.is_shared;
     this.noteService.update(idNote, {is_shared: newState}).subscribe(updated => this.note.set(updated));
   }
 
   //Event method to change between editing and not editing and make operations to prepare data.
   async toggleEdition(){
+    if(!this.note()?.is_shared && !this.isTheOwner()) return; //Prevent editing mode in not shared state
 
     //If the state editing is false we're trying to edit, then patch data.
     if(!this.editing()) this.updateNoteForm.patchValue({title: this.note()?.title, content: this.note()?.content});
@@ -161,6 +165,7 @@ export class ViewNotePageComponent{
     this.collaboratorsControl.push(collaboratorControl);
   }
 
+  //Handle submit event to add collaborators
   onSubmitCollaborators(){
     this.collaboratorsForm.markAllAsTouched();
     if(this.collaboratorsForm.invalid) return;
@@ -189,5 +194,9 @@ export class ViewNotePageComponent{
   handleClickedTrigger(){
     this.collaboratorsForm.controls.note.patchValue(this.noteId() ?? '');
     this.collaboratorsService.all().subscribe(res => this.collaborators.set(res.data));
+  }
+
+  isTheOwner(): boolean{
+    return this.authService._userAuthenticated()?.id === this.note()?.owner.id;
   }
 }

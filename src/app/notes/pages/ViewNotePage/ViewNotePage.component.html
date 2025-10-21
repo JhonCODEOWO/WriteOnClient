@@ -6,11 +6,12 @@
         <div [ngClass]="{'flex': !editing()}">
             @switch (editing()) {
             @case (false) {
-            <section class="py-5 px-2 flex justify-between w-full items-center">
-                <div>
+            <section class="py-5 flex flex-col gap-y-5 xl:flex-row justify-between xl:mx-5 w-full items-center">
+                <div class="w-full xl:w-fit">
                     <div class="flex items-center gap-x-4">
                         <h1 class="tracking-tight" (dblclick)="toggleEdition()">{{note()?.title}}</h1>
-                        <app-modal-trigger modalId="addCollaborators" class="bg-green-700 rounded-full p-1"
+                        @if (isTheOwner()) {
+                            <app-modal-trigger modalId="addCollaborators" class="bg-green-700 rounded-full p-1"
                             (clicked)="handleClickedTrigger()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                 <path fill="currentColor"
@@ -47,8 +48,14 @@
                             <button class="button button-success mt-5" (click)="onSubmitCollaborators()">Añadir
                                 seleccionados</button>
                         </app-modal>
+                        }
                     </div>
                     <p class="text-xm">{{note()?.tags?.join(', ')}}</p>
+                    <div>
+                        <p class="inline-block rounded-full px-2 py-0.5 text-xs font-bold cursor-pointer" [ngClass]="{'bg-green-500': note()?.is_shared, 'bg-red-500': !note()?.is_shared}" (click)="updateSharing(note()?.id ?? '')">
+                            {{(note()?.is_shared)? 'Compartiendo': 'Sin compartir'}}
+                        </p>
+                    </div>
                     <div class="mt-5">
                         <h3 class="text-xs mb-1">Colaboradores:</h3>
                         <div class="flex items-center">
@@ -71,18 +78,10 @@
                             }
                         </div>
                     </div>
-                    <div>
-                        <p class="flex items-center gap-x-3 text-xs">
-                            <span>Compartiendo nota: </span>
-                            <span (click)="updateSharing(note()?.id ?? '')"
-                                class="cursor-pointer w-4 h-4 inline-block rounded-full animate-pulse"
-                                [ngClass]="{'bg-green-500': note()?.is_shared, 'bg-red-500': !note()?.is_shared}"></span>
-                        </p>
-                    </div>
                 </div>
-                <div>
+                <div class="w-full xl:w-fit">
                     @if (note()?.is_shared) {
-                    <h2 class="text-sm text-neutral-300 mb-1">En línea</h2>
+                    <h2 class=" text-neutral-300 mb-1 text-xs">En línea</h2>
                     <ul class="flex">
                         @for (collaborator of collaboratorsInWorkspace(); track collaborator.id) {
                         <li>
@@ -93,7 +92,7 @@
                         }
                     </ul>
                     } @else {
-                    <p class="text-xs">⚠️ No se está compartiendo</p>
+                    <p class="text-xs text-center">⚠️ No se está compartiendo</p>
                     }
                 </div>
             </section>

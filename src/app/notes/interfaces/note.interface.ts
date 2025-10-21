@@ -7,4 +7,5 @@ export interface NoteInterface {
     tags:      string[];
     is_shared: boolean;
     collaborators: CollaboratorInterface[];
+    owner: CollaboratorInterface;
 }
