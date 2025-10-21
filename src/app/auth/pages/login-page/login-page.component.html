@@ -5,10 +5,10 @@
 
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <div class="p-5">
-      <h1 class="mb-8 text-slate-900 dark:text-white text-center text-2xl font-semibold">
-        Inicia sesión
+      <h1 class="mb-8 text-slate-900 dark:text-white text-center text-2xl font-semibold ">
+        Bienvenido
       </h1>
-
+ 
       @if (error() && !loading()) {
         <div
           class="mt-2 bg-red-500 text-sm text-white rounded-lg p-4 mb-4"

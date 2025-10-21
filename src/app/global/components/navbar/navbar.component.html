@@ -1,30 +1,71 @@
-<header
-    class="relative flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-white text-sm py-3 dark:bg-neutral-800">
-    <nav class="max-w-[85rem] w-full mx-auto px-4">
-        <div class="flex items-center justify-between">
-            <a class="flex-none text-xl font-semibold dark:text-white focus:outline-hidden focus:opacity-80" href="#"
-                aria-label="Brand">
-                WriteOn
-            </a>
-            <div class="flex gap-3">
-                <span
-                    class="inline-flex items-center justify-center size-9.5 rounded-full bg-gray-500 text-sm font-semibold text-white">
-                    {{initials()}}
-                </span>
-                <button type="button"
-                    class="hs-collapse-toggle relative size-9 flex justify-center items-center gap-x-2 rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-transparent dark:border-neutral-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
-                    id="hs-navbar-example-collapse" aria-expanded="false" aria-controls="hs-navbar-example"
-                    aria-label="Toggle navigation" data-hs-collapse="#hs-navbar-example">
-                    <svg class="hs-collapse-open:hidden shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24"
-                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
+<header class="w-full bg-white dark:bg-slate-900/80 dark:backdrop-blur-sm 
+         border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm">
+    <nav class="w-full px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+
+            <!-- Logo y Título -->
+            <div class="flex items-center space-x-4">
+                <div class="p-2 bg-slate-900 dark:bg-gradient-to-br dark:from-indigo-500 dark:to-blue-600 rounded-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                        </path>
+                    </svg>
+                </div>
+                <a class="text-xl font-bold text-slate-900 dark:text-white" href="#">Write On</a>
+            </div>
+
+            <!-- Buscador (funcionalidad pendiente) -->
+            <div class="flex-1 max-w-2xl mx-8 hidden md:block">
+                <div class="relative">
+                    <input type="text" placeholder="Buscar en tus notas..."
+                        class="w-full px-4 py-2 pl-10 bg-slate-100 dark:bg-blue-950 border border-slate-200 dark:border-blue-800 rounded-lg focus:outline-none focus:border-indigo-600 dark:focus:border-indigo-500 text-slate-900 dark:text-white placeholder-slate-400" />
+                    <svg class="w-5 h-5 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="flex items-center space-x-3">
+                <!-- Agregamos un boton que diga nueva nota dende usaremos la misma funcionalidad del boton +-->
+                <button class="px-4 py-2 bg-slate-900 dark:bg-gradient-to-r dark:from-indigo-500 dark:to-blue-600 
+                 text-white rounded-lg hover:bg-slate-800 dark:hover:from-indigo-600 
+                 dark:hover:to-blue-700 transition-all font-semibold shadow-lg dark:shadow-indigo-500/30 
+                 flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span class="hidden sm:inline">Nueva Nota</span>
+                </button>
+
+                <!--Toggle Tema-->
+                <app-theme-toggle></app-theme-toggle>
+
+                <!-- Perfil -->
+                <button
+                    class="flex items-center space-x-2 p-2 hover:bg-slate-100 dark:hover:bg-blue-900 rounded-lg transition-colors">
+                    <div
+                        class="w-9 h-9 bg-indigo-600 dark:bg-indigo-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                        {{ initials() }}
+                    </div>
+                </button>
+
+                <!-- Botón de opciones -->
+                <button type="button" class="hs-collapse-toggle p-2 bg-slate-100 dark:bg-blue-900 text-slate-700 dark:text-slate-200 
+ rounded-lg hover:bg-slate-200 dark:hover:bg-blue-800 transition-colors 
+ border border-slate-200 dark:border-blue-800 shadow-sm" id="hs-navbar-example-collapse" aria-expanded="false"
+                    aria-controls="hs-navbar-example" aria-label="Toggle navigation"
+                    data-hs-collapse="#hs-navbar-example">
+                    <svg class="hs-collapse-open:hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <line x1="3" x2="21" y1="6" y2="6" />
                         <line x1="3" x2="21" y1="12" y2="12" />
                         <line x1="3" x2="21" y1="18" y2="18" />
                     </svg>
-                    <svg class="hs-collapse-open:block hidden shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
+                    <svg class="hs-collapse-open:block hidden w-5 h-5" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
                         <path d="M18 6 6 18" />
                         <path d="m6 6 12 12" />
                     </svg>
@@ -32,12 +73,20 @@
                 </button>
             </div>
         </div>
-        <div id="hs-navbar-example"
-            class="hidden hs-collapse overflow-hidden transition-all duration-300 basis-full grow absolute dark:bg-neutral-800 top-[65px] right-[10px] md:right-[30px] rounded"
-            aria-labelledby="hs-navbar-example-collapse">
-            <div class="flex flex-col gap-y-1 px-7 py-1 md:text-lg">
-                <button class="text-red-400 cursor-pointer flex items-center gap-3" (click)="onLogoutClick()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 21V3h9v2H5v14h7v2zm13-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z"/></svg>
+
+        <!-- Menú desplegable de Cerrar Sesión -->
+        <div id="hs-navbar-example" class="hidden hs-collapse overflow-hidden transition-all duration-300 absolute 
+     top-[65px] right-[10px] md:right-[30px] z-50
+     bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 
+     rounded-xl shadow-xl dark:shadow-2xl" aria-labelledby="hs-navbar-example-collapse">
+            <div class="px-4 py-3 min-w-[200px]">
+                <button class="w-full text-left px-4 py-3 text-red-600 dark:text-red-400 
+         hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors 
+         flex items-center gap-3 font-medium" (click)="onLogoutClick()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M3 21V3h9v2H5v14h7v2zm13-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z" />
+                    </svg>
                     Cerrar sesión
                 </button>
             </div>
