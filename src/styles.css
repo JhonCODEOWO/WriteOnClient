@@ -17,7 +17,7 @@ h1 {
 }
 
 .button {
-    @apply p-1.5 cursor-pointer disabled:cursor-not-allowed flex gap-x-1 rounded items-center
+    @apply p-1.5 cursor-pointer disabled:cursor-not-allowed flex gap-x-1 rounded items-center justify-center disabled:text-gray-300
 }
 
 .button-error {
@@ -29,7 +29,7 @@ h1 {
 }
 
 .button-success {
-    @apply bg-green-500 dark:bg-green-600 text-white;
+    @apply bg-green-500 dark:bg-green-600 text-white disabled:bg-green-900;
 }
 
 .divider {

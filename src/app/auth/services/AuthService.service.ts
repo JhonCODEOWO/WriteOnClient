@@ -3,6 +3,8 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { catchError, delay, Observable, of, switchMap, tap } from 'rxjs';
 import { UserAuthenticated } from '../interfaces/user-authenticated';
+import { CollaboratorInterface } from '../../collaborators/interfaces/collaborator-interface';
+import { CreateUserInterface } from '../interfaces/create-account-request';
 
 const TOKEN_STORAGE_KEY = 'token';
 const USER_STORAGE_KEY = 'user';
@@ -26,6 +28,10 @@ export class AuthService {
       switchMap(() => this.getUser()),
       tap(user => this.userAuthenticated.set(user))
     );
+  }
+
+  create(body: CreateUserInterface): Observable<CollaboratorInterface>{
+    return this.client.post<CollaboratorInterface>(`${this.urlAuth}/create`, body);
   }
 
   getUser(): Observable<UserAuthenticated | null>{
