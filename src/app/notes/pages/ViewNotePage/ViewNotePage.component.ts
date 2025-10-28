@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop'
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom, map } from 'rxjs';
@@ -36,8 +36,12 @@ export class ViewNotePageComponent{
   authService = inject(AuthService);
   formHelpers = FormHelper;
 
+  modalAddCollaborators = viewChild<ModalComponent>('addCollaboratorsModal');
+
   noteId = toSignal(this.route.paramMap.pipe(map(params => params.get('id'))));
   note = signal<NoteInterface | null>(null);
+
+  //Collaborators that are include in each note.
   collaboratorsInNote = computed<undefined | {main: CollaboratorInterface[], hidden: CollaboratorInterface[]}>(() => {
     
     if(!this.note()) return;
@@ -54,12 +58,18 @@ export class ViewNotePageComponent{
     splitted.hidden = collaborators?.slice(4) ?? [];
     return splitted;
   });
-  collaborators = signal<CollaboratorInterface[]>([]);
+  
+  private collaborators = signal<CollaboratorInterface[]>([]); //Signal to store collaborators existing
+  
+  //Filter to get only collaborators available to add in a note.
   collaboratorsAvailable = computed(()=> {
     return this.collaborators().filter(collaborator => !this.note()?.collaborators.map(col => col.id).includes(collaborator.id));
   });
+
+  //Flags to some functionalities
   loading = signal<boolean>(false);
   editing = signal<boolean>(false);
+
   collaboratorsInWorkspace = signal<CollaboratorInterface[]>([]); //Data about collaborators online in this workspace
 
   //Make subscription to the presence channel
@@ -182,6 +192,8 @@ export class ViewNotePageComponent{
 
           this.collaboratorsControl.clear();
           this.collaborators.set([]);
+          this.collaboratorsForm.markAsUntouched();
+          this.modalAddCollaborators()?.closeModal();
         }
       }
     });
@@ -191,6 +203,7 @@ export class ViewNotePageComponent{
     this.updateNoteForm.patchValue({content});
   }
 
+  //Handle event of component modal with id addCollaborators to load all data necessary.
   handleClickedTrigger(){
     this.collaboratorsForm.controls.note.patchValue(this.noteId() ?? '');
     this.collaboratorsService.all().subscribe(res => this.collaborators.set(res.data));
