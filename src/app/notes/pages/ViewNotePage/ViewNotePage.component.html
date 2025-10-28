@@ -33,7 +33,7 @@
                             </ul>
                         </app-modal>
 
-                        <app-modal id="addCollaborators" title="Añadir colaboradores a esta nota">
+                        <app-modal id="addCollaborators" title="Añadir colaboradores a esta nota" #addCollaboratorsModal>
                             <h2 class="text-sm">Selecciona los colaboradores que deseas añadir</h2>
                             <ul class="max-h-[20rem] overflow-y-auto py-3">
                                 @if (collaboratorsControl.touched) {
