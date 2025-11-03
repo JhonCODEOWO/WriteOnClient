@@ -1,4 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, EventEmitter, input, output, signal, viewChild, ViewChild } from '@angular/core';
+import { HSOverlay } from 'preline/dist';
 
 @Component({
   selector: 'app-modal',
@@ -48,7 +49,9 @@ export class ModalComponent implements AfterViewInit{
   cancel = output();
 
   ngAfterViewInit(): void {
-      setTimeout(() => window.HSStaticMethods.autoInit(), 100);
+      setTimeout(() => {
+        window.HSStaticMethods.autoInit();
+      }, 100);
   }
 
   onSaveChanges(){
@@ -57,5 +60,10 @@ export class ModalComponent implements AfterViewInit{
 
   onCancel(){
     this.cancel.emit();
+  }
+
+  closeModal(){
+    if(!this.modalParent()) return;
+    HSOverlay.close(this.modalParent()?.nativeElement);
   }
 }
