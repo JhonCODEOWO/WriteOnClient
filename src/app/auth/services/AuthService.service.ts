@@ -43,9 +43,9 @@ export class AuthService {
   }
 
   /**
-   * Make a create user request to the backend
+   * Make a create user request to the backend and try to make login with it
    * @param body Body request 
-   * @returns Observable<CollaboratorInterface> The interface of a collaborator created successfully
+   * @returns Observable<UserAuthenticated | null> The interface of a collaborator created successfully
    */
   create(body: CreateUserInterface): Observable<UserAuthenticated | null>{
     return this.client.post<CollaboratorInterface>(`${environment.API_URL}/users`, body).pipe(
