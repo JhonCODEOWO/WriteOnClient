@@ -22,16 +22,35 @@ export class AuthService {
   _userAuthenticated = computed(() => this.userAuthenticated());
   _token = computed(() => this.token());
 
+
+  /**
+   * Try to login a user, if is successfully then make the next things:
+   * - Add the token to the local storage and set it to the token property.
+   * - Make a request to get the user from the backend too and set it to userAuthenticated. 
+   * 
+   * TODO: Refactor `handleLogin` and `login` since both make the same `getUser` request.
+   *       This can be simplified to a single request for efficiency and clarity.
+   * @param email Email of the user
+   * @param password Password of the account
+   * @returns 
+   */
   login(email: string, password: string): Observable<UserAuthenticated | null>{
     return this.client.post<{token: string}>(`${this.urlAuth}/login`, {email, password}).pipe(
-      tap(response => this.handleLogin(response.token)),
-      switchMap(() => this.getUser()),
-      tap(user => this.userAuthenticated.set(user))
+      tap(response => this.handleLogin(response.token)), //Make operations with token retrieved by backends
+      switchMap(() => this.getUser()), //Make request to try get the user
+      tap(user => this.userAuthenticated.set(user)) //Set user logged into the service
     );
   }
 
-  create(body: CreateUserInterface): Observable<CollaboratorInterface>{
-    return this.client.post<CollaboratorInterface>(`${this.urlAuth}/create`, body);
+  /**
+   * Make a create user request to the backend
+   * @param body Body request 
+   * @returns Observable<CollaboratorInterface> The interface of a collaborator created successfully
+   */
+  create(body: CreateUserInterface): Observable<UserAuthenticated | null>{
+    return this.client.post<CollaboratorInterface>(`${environment.API_URL}/users`, body).pipe(
+      switchMap(userCreated => this.login(userCreated.email, body.password)) //After create try to login
+    );
   }
 
   getUser(): Observable<UserAuthenticated | null>{

@@ -5,6 +5,9 @@ import { AuthService } from '../../services/AuthService.service';
 import { FormHelper } from '../../../global/helpers/form-helpers';
 import { fullNameValidator } from '../../../global/validators/fullNamePattern.validator';
 import { passwordValidation } from '../../../global/validators/password.validator';
+import { CreateUserInterface } from '../../interfaces/create-account-request';
+import { switchMap } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-account-page',
@@ -15,6 +18,7 @@ import { passwordValidation } from '../../../global/validators/password.validato
 export class CreateAccountPage {
   fb = inject(FormBuilder);
   authService = inject(AuthService);
+  router = inject(Router);
   formUtils = FormHelper;
 
   createAccountForm = this.fb.group({
@@ -25,10 +29,13 @@ export class CreateAccountPage {
   })
 
   onSubmitCreateAccount(){
-    console.log(this.createAccountForm.controls.name.errors);
-    console.log(this.createAccountForm.value);
     this.createAccountForm.markAllAsTouched();
     if(this.createAccountForm.invalid) return;
-    
+    let data: CreateUserInterface = {...this.createAccountForm.value as any};
+    this.authService.create(data).subscribe({
+      next: (authenticated) => {
+        this.router.navigateByUrl('');
+      }
+    })
   }
 }
