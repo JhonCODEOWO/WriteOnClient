@@ -30,11 +30,20 @@ export class FormHelper {
         case 'maxlength':
           return `Este campo admite una longitud máxima de ${value.requiredLength} y actualmente tiene ${value.actualLength} elementos.`
 
+        case 'fullNameInvalid':
+          return `Debes llenar este campo con al menos un apellido.`
+        
+        case 'passwordNotValid':
+          return `La contraseña debe tener: 1 letra minúscula, 1 letra mayúscula y 1 número además, no se admiten espacios.`
+
         default:
           console.info(value);
-          return 'No se ha definido una descripción para el error ' + key + ' ' + value;
+          return 'No se ha definido una descripción para el error ' + key + ' valor dentro del error: ' + value;
       }
     }
     return 'No se ha encontrado la key dentro de ValidationErrors';
   }
+
+  static fullNamePattern: string = '^[a-zA-ZÁÉÍÓÚáéíóúÑñ]+( [a-zA-ZÁÉÍÓÚáéíóúÑñ]+)+$';
+  static passwordPattern: string = '^((?=\\S*?[A-Z])(?=\\S*?[a-z])(?=\\S*?[0-9]).{6,})\\S$';
 }

@@ -1,0 +1,24 @@
+<div class="text-white flex justify-center">
+    <div class="w-full md:w-[50%] flex flex-col gap-y-5 md:flex-row md:px-5">
+        <div class="md:rounded-tl-md md:rounded-bl-md overflow-hidden md:w-[300px]">
+            <img src="side_img.png" alt="" class="h-full object-cover">
+        </div>
+        <form [formGroup]="createAccountForm" (ngSubmit)="onSubmitCreateAccount()" class="w-full px-3 mx-auto flex flex-col gap-y-5 md:px-9">
+            <section>
+                <h1>Crear cuenta nueva</h1>
+            <p>Llena los campos para continuar</p>
+            </section>
+            <app-input-component [formGroup]="createAccountForm" name="name" inputType="text" label="Nombre completo" />
+            <app-input-component [formGroup]="createAccountForm" name="email" inputType="text"
+                label="Ingresa tu correo electrónico" />
+            <app-input-component [formGroup]="createAccountForm" name="password" inputType="password"
+                label="Contraseña para la cuenta" />
+            <app-input-component [formGroup]="createAccountForm" name="password_confirmation" inputType="password"
+                label="Confirma la contraseña" />
+            <button class="button button-success" [disabled]="createAccountForm.invalid">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9 21q-2.5 0-4.25-1.75T3 15V9q0-2.5 1.75-4.25T9 3h6q2.5 0 4.25 1.75T21 9v6q0 2.5-1.75 4.25T15 21zm2-7.8l-1.5-1.5q-.275-.275-.7-.275t-.7.275t-.275.7t.275.7l2.2 2.2q.3.3.7.3t.7-.3l4.6-4.6q.275-.275.275-.7t-.275-.7t-.7-.275t-.7.275z"/></svg>
+                Crear cuenta
+            </button>
+        </form>
+    </div>
+</div>
