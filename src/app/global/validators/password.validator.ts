@@ -5,6 +5,5 @@ export function passwordValidation(control: AbstractControl): ValidationErrors |
     const pattern = FormHelper.passwordPattern;
     const fnValidate = Validators.pattern(pattern);
     const result = fnValidate(control);
-    console.log(result);
     return result?{passwordNotValid: true}: null;
 }
