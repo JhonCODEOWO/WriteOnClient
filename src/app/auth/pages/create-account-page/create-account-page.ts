@@ -8,6 +8,7 @@ import { passwordValidation } from '../../../global/validators/password.validato
 import { CreateUserInterface } from '../../interfaces/create-account-request';
 import { switchMap } from 'rxjs';
 import { Router } from '@angular/router';
+import { uniqueCheck } from '../../../global/validators/unique-check.directive';
 
 @Component({
   selector: 'app-create-account-page',
@@ -23,10 +24,14 @@ export class CreateAccountPage {
 
   createAccountForm = this.fb.group({
     "name": ['', [Validators.required, fullNameValidator]],
-    "email": ['', [Validators.required, Validators.email]],
+    "email": ['', [Validators.required, Validators.email], [uniqueCheck({table: 'users', column: 'email'})]],
     "password": ['', [Validators.required, Validators.minLength(8), passwordValidation]],
     "password_confirmation": ['', [Validators.required, Validators.minLength(8), passwordValidation]]
-  })
+  },
+  {
+    updateOn: 'blur'
+  }
+  )
 
   onSubmitCreateAccount(){
     this.createAccountForm.markAllAsTouched();

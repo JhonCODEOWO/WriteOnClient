@@ -35,6 +35,9 @@ export class FormHelper {
         
         case 'passwordNotValid':
           return `La contraseña debe tener: 1 letra minúscula, 1 letra mayúscula y 1 número además, no se admiten espacios.`
+        
+        case 'notAvailable':
+          return `El valor escrito no está disponible para utilizar actualmente, escribe otro e intenta de nuevo.`
 
         default:
           console.info(value);
