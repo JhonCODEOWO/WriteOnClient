@@ -12,7 +12,7 @@
             <app-input-component [formGroup]="createAccountForm" name="email" inputType="text"
                 label="Ingresa tu correo electrónico" />
             <app-input-component [formGroup]="createAccountForm" name="password" inputType="password"
-                label="Contraseña para la cuenta" />
+                label="Contraseña para la cuenta" [formErrorsToShow]="['labelsNotMatch']"/>
             <app-input-component [formGroup]="createAccountForm" name="password_confirmation" inputType="password"
                 label="Confirma la contraseña" />
             <button class="button button-success" [disabled]="createAccountForm.invalid">

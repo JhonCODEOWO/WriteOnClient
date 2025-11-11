@@ -26,4 +26,15 @@
   @if (abstractControl().touched) {
   <p class="text-red-500 text-xs">{{formHelpers.showError(formGroup().controls[name()])}}</p>
   }
+
+  <!-- Show individual errors from form group -->
+  @if (formGroup().touched && formGroup().errors && formErrorsToShow()) {
+    @for (wanted_error of formErrorsToShow(); track $index) {
+      @if(formGroup().hasError(wanted_error)){
+        <p class="text-xs text-red-500">
+          {{formHelpers.findError(formGroup().errors)}}
+        </p>
+      }
+    }
+  }
 </div>

@@ -9,6 +9,7 @@ import { CreateUserInterface } from '../../interfaces/create-account-request';
 import { switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { uniqueCheck } from '../../../global/validators/unique-check.directive';
+import { labelsMatch } from '../../../global/validators/labels-match.directive';
 
 @Component({
   selector: 'app-create-account-page',
@@ -29,7 +30,8 @@ export class CreateAccountPage {
     "password_confirmation": ['', [Validators.required, Validators.minLength(8), passwordValidation]]
   },
   {
-    updateOn: 'blur'
+    updateOn: 'blur',
+    validators: [labelsMatch({fieldName: 'password'})]
   }
   )
 
