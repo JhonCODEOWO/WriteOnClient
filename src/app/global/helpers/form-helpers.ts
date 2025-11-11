@@ -39,6 +39,9 @@ export class FormHelper {
         case 'notAvailable':
           return `El valor escrito no está disponible para utilizar actualmente, escribe otro e intenta de nuevo.`
 
+        case 'labelsNotMatch':
+          return `Para continuar el campo ${(value.field as string)} y su confirmación deben de coincidir.`
+
         default:
           console.info(value);
           return 'No se ha definido una descripción para el error ' + key + ' valor dentro del error: ' + value;
