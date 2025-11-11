@@ -28,7 +28,7 @@
   }
 
   <!-- Show individual errors from form group -->
-  @if (formGroup().touched && formGroup().errors && formErrorsToShow()) {
+  @if (formGroup().dirty && formGroup().errors && formErrorsToShow()) {
     @for (wanted_error of formErrorsToShow(); track $index) {
       @if(formGroup().hasError(wanted_error)){
         <p class="text-xs text-red-500">
