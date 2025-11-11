@@ -25,12 +25,11 @@ export class CreateAccountPage {
 
   createAccountForm = this.fb.group({
     "name": ['', [Validators.required, fullNameValidator]],
-    "email": ['', [Validators.required, Validators.email], [uniqueCheck({table: 'users', column: 'email'})]],
+    "email": ['', {updateOn: 'blur', validators: [Validators.required, Validators.email], asyncValidators: [uniqueCheck({table: 'users', column: 'email'})]}],
     "password": ['', [Validators.required, Validators.minLength(8), passwordValidation]],
     "password_confirmation": ['', [Validators.required, Validators.minLength(8), passwordValidation]]
   },
   {
-    updateOn: 'blur',
     validators: [labelsMatch({fieldName: 'password'})]
   }
   )
