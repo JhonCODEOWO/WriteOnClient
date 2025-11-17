@@ -6,34 +6,95 @@
         <div [ngClass]="{'flex': !editing()}">
             @switch (editing()) {
             @case (false) {
-            <section class="py-5 flex flex-col gap-y-5 xl:flex-row justify-between xl:mx-5 w-full items-center">
+            <section class="p-4 lg:p-8 w-full">
+                <div class="max-w-5xl mx-auto">
+                    <div class="mb-6 flex items-center justify-between">
+                        <a href="#"
+                            class="flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="M20 11H7.83l5.59-5.59L12 4l-8 8l8 8l1.41-1.41L7.83 13H20v-2Z" />
+                            </svg>
+                            <span class="text-sm font-medium">Volver a notas</span>
+                        </a>
+                        <div class="flex items-center space-x-2">
+                            @if (note()?.is_shared) {
+                                <div class="flex items-center space-x-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm">
+                                    <div class="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
+                                    <span class="text-slate-700 dark:text-slate-300 font-medium">En línea</span>
+                                </div>
+                          
+                            <ul class="flex">
+                                @for (collaborator of collaboratorsInWorkspace(); track collaborator.id) {
+                                <li>
+                                    <app-profile-image [name]="collaborator.name" />
+                                </li>
+                                } @empty {
+                                <li
+                                    class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm text-slate-700 dark:text-slate-300">
+                                    Sin conexiones</li>
+                                }
+                            </ul>
+                            } @else {
+                            <p class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm text-slate-700 dark:text-slate-300">⚠️ No se está compartiendo</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
                 <div class="w-full xl:w-fit">
                     <div class="flex items-center gap-x-4">
                         <h1 class="tracking-tight" (dblclick)="toggleEdition()">{{note()?.title}}</h1>
                         @if (isTheOwner()) {
-                            <app-modal-trigger modalId="addCollaborators" class="bg-green-700 rounded-full p-1"
+                        <app-modal-trigger modalId="addCollaborators" class="bg-green-700 rounded-full p-1"
                             (clicked)="handleClickedTrigger()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                 <path fill="currentColor"
                                     d="M12.5 11.95q.725-.8 1.113-1.825T14 8t-.387-2.125T12.5 4.05q1.5.2 2.5 1.325T16 8t-1 2.625t-2.5 1.325M17.45 20q.275-.45.413-.962T18 18v-1q0-.9-.4-1.713t-1.05-1.437q1.275.45 2.363 1.163T20 17v1q0 .825-.587 1.413T18 20zM20 11h-1q-.425 0-.712-.288T18 10t.288-.712T19 9h1V8q0-.425.288-.712T21 7t.713.288T22 8v1h1q.425 0 .713.288T24 10t-.288.713T23 11h-1v1q0 .425-.288.713T21 13t-.712-.288T20 12zM8 12q-1.65 0-2.825-1.175T4 8t1.175-2.825T8 4t2.825 1.175T12 8t-1.175 2.825T8 12m-8 6v-.8q0-.85.438-1.562T1.6 14.55q1.55-.775 3.15-1.162T8 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T16 17.2v.8q0 .825-.587 1.413T14 20H2q-.825 0-1.412-.587T0 18" />
                             </svg>
                         </app-modal-trigger>
-                        
+
                         <app-modal-trigger modalId="deleteCollaborators" class="bg-red-600 rounded-full p-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19.775 22.625L17.5 20.35q-1.2.8-2.587 1.225T12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12q0-1.525.425-2.912T3.65 6.5L1.375 4.225L2.8 2.8l18.4 18.4zm-7.85-2.65q1.125 0 2.15-.288T16 18.85l-2.275-2.275q-.95.425-1.862 1.188T10.3 19.8q.4.075.8.125t.825.05m-3.1-.625q.875-1.8 1.988-2.675T12.5 15.5q-.725-.225-1.462-.363T9.5 15q-1.125 0-2.225.275t-2.125.775q.65 1.075 1.588 1.938t2.087 1.362M20.35 17.5l-3.1-3.1q.775-.25 1.263-.9T19 12q0-1.05-.725-1.775T16.5 9.5q-.85 0-1.5.488t-.9 1.262l-1.1-1.1q.05-1.525-1.025-2.613T9.35 6.5L6.5 3.65q1.2-.8 2.588-1.225T12 2q2.075 0 3.9.788t3.175 2.137T21.213 8.1T22 12q0 1.525-.425 2.913T20.35 17.5m-10.85-4q.275 0 .513-.038t.487-.112L6.15 9q-.075.25-.112.488T6 10q0 1.45 1.025 2.475T9.5 13.5"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="M19.775 22.625L17.5 20.35q-1.2.8-2.587 1.225T12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12q0-1.525.425-2.912T3.65 6.5L1.375 4.225L2.8 2.8l18.4 18.4zm-7.85-2.65q1.125 0 2.15-.288T16 18.85l-2.275-2.275q-.95.425-1.862 1.188T10.3 19.8q.4.075.8.125t.825.05m-3.1-.625q.875-1.8 1.988-2.675T12.5 15.5q-.725-.225-1.462-.363T9.5 15q-1.125 0-2.225.275t-2.125.775q.65 1.075 1.588 1.938t2.087 1.362M20.35 17.5l-3.1-3.1q.775-.25 1.263-.9T19 12q0-1.05-.725-1.775T16.5 9.5q-.85 0-1.5.488t-.9 1.262l-1.1-1.1q.05-1.525-1.025-2.613T9.35 6.5L6.5 3.65q1.2-.8 2.588-1.225T12 2q2.075 0 3.9.788t3.175 2.137T21.213 8.1T22 12q0 1.525-.425 2.913T20.35 17.5m-10.85-4q.275 0 .513-.038t.487-.112L6.15 9q-.075.25-.112.488T6 10q0 1.45 1.025 2.475T9.5 13.5" />
+                            </svg>
                         </app-modal-trigger>
 
                         <app-modal id="deleteCollaborators" title="Eliminar colaboradores">
                             <ul>
                                 @for (collabInNote of note()?.collaborators; track collabInNote) {
                                 <collaborator-element [collaborator]="collabInNote">
-                                    <button class="button button-error" (click)="deleteCollaborator(collabInNote, note()?.id ?? '')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="20" stroke-dashoffset="20" d="M3 21v-1c0 -2.21 1.79 -4 4 -4h4c2.21 0 4 1.79 4 4v1"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="20;0"/></path><path stroke-dasharray="20" stroke-dashoffset="20" d="M9 13c-1.66 0 -3 -1.34 -3 -3c0 -1.66 1.34 -3 3 -3c1.66 0 3 1.34 3 3c0 1.66 -1.34 3 -3 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.2s" dur="0.2s" values="20;0"/></path><path stroke-dasharray="8" stroke-dashoffset="8" d="M15 6h6"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.2s" values="8;0"/></path></g></svg></button>
+                                    <button class="button button-error"
+                                        (click)="deleteCollaborator(collabInNote, note()?.id ?? '')"><svg
+                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24">
+                                            <g fill="none" stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2">
+                                                <path stroke-dasharray="20" stroke-dashoffset="20"
+                                                    d="M3 21v-1c0 -2.21 1.79 -4 4 -4h4c2.21 0 4 1.79 4 4v1">
+                                                    <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s"
+                                                        values="20;0" />
+                                                </path>
+                                                <path stroke-dasharray="20" stroke-dashoffset="20"
+                                                    d="M9 13c-1.66 0 -3 -1.34 -3 -3c0 -1.66 1.34 -3 3 -3c1.66 0 3 1.34 3 3c0 1.66 -1.34 3 -3 3Z">
+                                                    <animate fill="freeze" attributeName="stroke-dashoffset"
+                                                        begin="0.2s" dur="0.2s" values="20;0" />
+                                                </path>
+                                                <path stroke-dasharray="8" stroke-dashoffset="8" d="M15 6h6">
+                                                    <animate fill="freeze" attributeName="stroke-dashoffset"
+                                                        begin="0.5s" dur="0.2s" values="8;0" />
+                                                </path>
+                                            </g>
+                                        </svg></button>
                                 </collaborator-element>
-                            }
+                                }
                             </ul>
                         </app-modal>
 
-                        <app-modal id="addCollaborators" title="Añadir colaboradores a esta nota" #addCollaboratorsModal>
+                        <app-modal id="addCollaborators" title="Añadir colaboradores a esta nota"
+                            #addCollaboratorsModal>
                             <h2 class="text-sm">Selecciona los colaboradores que deseas añadir</h2>
                             <ul class="max-h-[20rem] overflow-y-auto py-3">
                                 @if (collaboratorsControl.touched) {
@@ -66,7 +127,9 @@
                     </div>
                     <p class="text-xm">{{note()?.tags?.join(', ')}}</p>
                     <div>
-                        <p class="inline-block rounded-full px-2 py-0.5 text-xs font-bold cursor-pointer" [ngClass]="{'bg-green-500': note()?.is_shared, 'bg-red-500': !note()?.is_shared}" (click)="updateSharing(note()?.id ?? '')">
+                        <p class="inline-block rounded-full px-2 py-0.5 text-xs font-bold cursor-pointer"
+                            [ngClass]="{'bg-green-500': note()?.is_shared, 'bg-red-500': !note()?.is_shared}"
+                            (click)="updateSharing(note()?.id ?? '')">
                             {{(note()?.is_shared)? 'Compartiendo': 'Sin compartir'}}
                         </p>
                     </div>
