@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, input, output, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
 import Quill from 'quill';
 
 @Component({
@@ -19,6 +19,16 @@ export class RichTextBoxComponent implements AfterViewInit{
   box = viewChild<ElementRef>('textbox');
   initialText = input<string>('');
   writingContent = output<string>();
+
+  quillInstance = signal<Quill | null>(null);
+
+  //Reload text every time initialText or instance change
+  setText = effect(() => {
+    if(!this.quillInstance()) return;
+    
+    this.quillInstance()?.setText('');
+    this.quillInstance()?.clipboard.dangerouslyPasteHTML(0, this.initialText());
+  })
 
   ngAfterViewInit(): void {
       const element = this.box()?.nativeElement as HTMLDivElement;
@@ -41,14 +51,15 @@ export class RichTextBoxComponent implements AfterViewInit{
         }
       );
 
-      quill.clipboard.dangerouslyPasteHTML(0, this.initialText());
-      quill.on('text-change', (delta, oldContent) => {
-        if(quill.getText().trim().length === 0) {
+      this.quillInstance.set(quill);
+
+      this.quillInstance()?.on('text-change', (delta, oldContent) => {
+        if(this.quillInstance()?.getText().trim().length === 0) {
           this.writingContent.emit('');
           return;
         }
 
-        this.writingContent.emit(quill.getSemanticHTML());
+        this.writingContent.emit(this.quillInstance()!.getSemanticHTML());
       })
   }
 }
