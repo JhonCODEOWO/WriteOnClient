@@ -74,23 +74,33 @@ export class ViewNotePageComponent{
 
   //Make subscription to the presence channel
   listenForChanges = effect(onCleanup => {
-    if(!this.note()) return;
-    this.broadcastService.echo()?.join(`note.${this.note()?.id}`)
+    const noteId = this.noteId();
+    if(!noteId) return;
+    this.broadcastService.echo()?.join(`note.${noteId}`)
         .listen('UpdateNote', (e: {note: NoteInterface}) => {
-          this.note.set(e.note);
+          this.note.update((actualNote) => {
+            if(!actualNote) return null;
+
+            return {...actualNote, ...e.note}
+          });
         })
         .here((users: CollaboratorInterface[]) => {
           this.collaboratorsInWorkspace.set(users);
         })
         .joining((user: CollaboratorInterface) => {
-            console.log(user);
+            this.collaboratorsInWorkspace.update((actual)=>[...actual, user]);
+        })
+        .leaving((user: CollaboratorInterface) => {
+          this.collaboratorsInWorkspace.update((actual) => 
+            actual.filter(u => u.id !== user.id)
+          );
         })
         .error((error: any) => {
           if(error.status === 403) console.error('You are not authorized to listen to this channel');
         });
 
     onCleanup(()=> {
-      this.broadcastService.leaveChannel(`presence-note.${this.note()?.id}`);
+      this.broadcastService.leaveChannel(`presence-note.${noteId}`);
     })
   });
 
