@@ -14,6 +14,8 @@ import { NoteElementComponent } from '../../../notes/components/note-element/not
 import { TagsNote } from '../../../notes/interfaces/tags-note.interface';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { NgClass } from '@angular/common';
+import { LaravelBroadcastingService } from '../../services/laravel-broadcasting.service';
+import { CollaborativeNotesPayload } from '../../interfaces/collaborative-notes-payload';
 
 @Component({
   selector: 'app-index-page',
@@ -25,7 +27,37 @@ export class IndexPageComponent{
   router = inject(Router);
   user = inject(AuthService)._userAuthenticated();
   noteService = inject(NotesService);
+  broadcastService = inject(LaravelBroadcastingService);
   paginatedNotes = signal<PaginatedResource<NoteInterface> | null>(null);
+
+  /**
+   * Effect that subscribe to the private channel to receive messages about collaborative notes in this user
+   */
+  listenForNewCollaborations = effect((onCleanup) => {
+    const channelName = `note-assigned.${this.user?.id}`;
+    this.broadcastService.echo()?.private(channelName)
+      .listen('AssignedToNote', (payload: CollaborativeNotesPayload) => {
+        console.log(payload);
+        switch (payload.status) {
+          case 'ASSIGNED':
+            this.paginatedNotes.update((prev) => {
+              if(!prev) return null;
+
+              return {...prev, data: [...prev.data, payload.note]}
+            })
+            break;
+          case 'DETACHED':
+            this.paginatedNotes.update(prev => {
+              if(!prev) return null;
+              const actualData = prev.data;
+              return {...prev, data: actualData.filter(note => note.id != payload.note.id)};
+            })
+            break;
+          default:
+            break;
+        }
+      })
+  });
 
   loadPaginatedNotes = effect((onCleanup) => {
     const subscription = this.noteService
