@@ -61,9 +61,13 @@ export class ViewNotePageComponent{
   
   private collaborators = signal<CollaboratorInterface[]>([]); //Signal to store collaborators existing
   
-  //Filter to get only collaborators available to add in a note.
+  //Filter to get only collaborators available to add in a note and are different than the user authenticated.
   collaboratorsAvailable = computed(()=> {
-    return this.collaborators().filter(collaborator => !this.note()?.collaborators.map(col => col.id).includes(collaborator.id));
+    return this.collaborators()
+      .filter(
+        collaborator => 
+          !this.note()?.collaborators.map(col => col.id).includes(collaborator.id) && collaborator.id != this.authService._userAuthenticated()?.id
+      );
   });
 
   //Flags to some functionalities
