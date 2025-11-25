@@ -89,6 +89,22 @@ export class NotificationService {
     }
 
     /**
+     *  Create and add a generic success notification.
+     * @param message The content of notification
+     */
+    success(message: string){
+        this.add({message, type: TypeNotification.SUCCESS});
+    }
+
+    /**
+     *  Create and add a generic error notification.
+     * @param message The content describing the error
+     */
+    error(message: string){
+        this.add({message, type: TypeNotification.ERROR});
+    }
+
+    /**
      * Return a Notification literal object
      * @param title The title to apply
      * @param message The message of the notification
