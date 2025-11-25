@@ -4,5 +4,6 @@ export interface Notification {
     id: string,
     type: TypeNotification,
     title?: string,
-    message: string
+    message: string,
+    date?: string,
 }

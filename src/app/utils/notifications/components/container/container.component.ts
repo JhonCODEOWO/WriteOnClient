@@ -7,7 +7,7 @@ import { Notification } from '../../interfaces/notification.interface';
   selector: 'notification-container',
   imports: [NotificationElement],
   template: `
-  <div class="fixed right-0 top-0 gap-y-3 mt-2 mr-3 flex flex-col max-h-[100dvh] z-[99]">
+  <div class="fixed right-0 top-0 gap-y-3 mt-2 mr-3 flex flex-col max-h-[100dvh] z-[99] min-w-[300px] max-w-[300px]">
 @for (notification of notificationService.notifications(); track notification.id) {
         <notification-element [notification]="notification" (dropIdClicked)="handleDroppedIdClicked($event)"/>
 }
