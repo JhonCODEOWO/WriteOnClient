@@ -94,3 +94,33 @@ h1 {
 .ql-toolbar .ql-picker {
     @apply !text-white;
 } */
+
+@keyframes notification-enter {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes notification-leave {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+
+.notification-enter {
+  animation: notification-enter 0.25s ease-out forwards;
+}
+
+.notification-leave {
+  animation: notification-leave 0.25s ease-in forwards;
+}

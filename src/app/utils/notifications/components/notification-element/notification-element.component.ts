@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { Notification } from '../../interfaces/notification.interface';
 import { TypeNotification } from '../../enums/type-notification.enum';
 import { NgClass } from '@angular/common';
@@ -12,7 +12,7 @@ interface NotificationElementClasses {
   selector: 'notification-element',
   imports: [NgClass],
   template: `
-    <div [ngClass]="classMap.get(notification().type)?.mainContent" role="alert" tabindex="-1" aria-labelledby="hs-bordered-success-style-label">
+    <div [ngClass]="classMap.get(notification().type)?.mainContent" [class.notification-enter]="notification().state === 'enter'" [class.notification-leave]="notification().state === 'leave'" role="alert" tabindex="-1" aria-labelledby="hs-bordered-success-style-label">
           <div class="flex items-center">
             <div class="shrink-0">
               @switch (notification().type) {

@@ -62,18 +62,30 @@ export class NotificationService {
      * @param id The uuid of the notification to delete
      */
     deleteNotification(id: string){
-        //Get timer
-        const timer = this.timeouts.get(id);
-
-        //If timer exists then clear it and delete it from the map
-        if(timer) {
-            clearTimeout(timer);
-            this.timeouts.delete(id);
-        }
-
-        this.notifications.update((actualNotifications) => {
-            return actualNotifications.filter(notification => notification.id != id);
+        //Update state to specified id
+        this.notifications.update(notifications => {
+            return notifications.map((notification): Notification => {
+                if(notification.id === id){
+                    return {...notification, state: 'leave'}
+                }
+                return notification;
+            })
         })
+        
+        setTimeout(()=> {
+            //Get timer
+            const timer = this.timeouts.get(id);
+
+            //If timer exists then clear it and delete it from the map
+            if(timer) {
+                clearTimeout(timer);
+                this.timeouts.delete(id);
+            }
+
+            this.notifications.update((actualNotifications) => {
+                return actualNotifications.filter(notification => notification.id != id);
+            })
+        }, 250)
     }
 
     /**
@@ -96,7 +108,7 @@ export class NotificationService {
             minute: '2-digit'
         });
 
-        return {id: uuidToAssign, date, title, message, type}
+        return {id: uuidToAssign, date, title, message, type, state: 'enter'}
     }
 
     /**
