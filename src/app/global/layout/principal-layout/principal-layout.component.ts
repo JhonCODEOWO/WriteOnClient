@@ -2,10 +2,11 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, viewChil
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from "../../components/footer/footer.component";
 import { RouterOutlet } from '@angular/router';
+import { ContainerComponent } from "../../../utils/notifications/components/container/container.component";
 
 @Component({
   selector: 'app-principal-layout',
-  imports: [NavbarComponent, FooterComponent, RouterOutlet],
+  imports: [NavbarComponent, FooterComponent, RouterOutlet, ContainerComponent],
   templateUrl: './principal-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
