@@ -20,6 +20,7 @@ import { CollaboratorsService } from '../../../collaborators/services/Collaborat
 import { CollaboratorComponent } from '../../../collaborators/components/Collaborator/Collaborator.component';
 import { isUUID } from '../../../global/validators/is-uuid.directive';
 import { AuthService } from '../../../auth/services/AuthService.service';
+import { NotificationService } from '../../../utils/notifications/services/notifications.service';
 
 @Component({
   selector: 'app-view-note-page',
@@ -34,6 +35,7 @@ export class ViewNotePageComponent{
   collaboratorsService = inject(CollaboratorsService);
   broadcastService = inject(LaravelBroadcastingService);
   authService = inject(AuthService);
+  notificationService = inject(NotificationService);
   formHelpers = FormHelper;
 
   modalAddCollaborators = viewChild<ModalComponent>('addCollaboratorsModal');
@@ -198,6 +200,7 @@ export class ViewNotePageComponent{
     this.noteService.addCollaborators({collaborators: value.collaborators?.map(collaborator => collaborator.id) ?? []}, value.note ?? '').subscribe({
       next: (res) => {
         if(res) {
+          this.notificationService.success(`Se han añadido ${value.collaborators?.length} nuevos colaboradores a la nota.`);
           this.note.update((actual) => {
           if(!actual) return null;
 
@@ -231,10 +234,16 @@ export class ViewNotePageComponent{
   deleteCollaborator(collaborator: CollaboratorInterface, noteID: string){
     this.noteService.dropCollaborator(noteID, collaborator).subscribe({
       next: (res) => {
-        if(res) this.note.update((actual) => {
-          if(!actual) return null;
-          return {...actual, collaborators: [...actual.collaborators.filter(actual_collaborator => collaborator.id != actual_collaborator.id)]}
-        })
+        if(res) {
+            this.notificationService.success(`Se ha quitado a ${collaborator.name} como colaborador de esta nota.`);
+            this.note.update((actual) => {
+            if(!actual) return null;
+            return {...actual, collaborators: [...actual.collaborators.filter(actual_collaborator => collaborator.id != actual_collaborator.id)]}
+          })
+        }
+      },
+      error: error => {
+        this.notificationService.error(`No se ha podido eliminar al colaborador en este momento, intenta de nuevo más tarde.`);
       }
     });
   }
