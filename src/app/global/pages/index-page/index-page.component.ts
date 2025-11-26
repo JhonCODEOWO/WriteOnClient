@@ -16,6 +16,7 @@ import { LoaderComponent } from '../../components/loader/loader.component';
 import { NgClass } from '@angular/common';
 import { LaravelBroadcastingService } from '../../services/laravel-broadcasting.service';
 import { CollaborativeNotesPayload } from '../../interfaces/collaborative-notes-payload';
+import { NotificationService } from '../../../utils/notifications/services/notifications.service';
 
 @Component({
   selector: 'app-index-page',
@@ -28,6 +29,7 @@ export class IndexPageComponent{
   user = inject(AuthService)._userAuthenticated();
   noteService = inject(NotesService);
   broadcastService = inject(LaravelBroadcastingService);
+  notificationService = inject(NotificationService);
   paginatedNotes = signal<PaginatedResource<NoteInterface> | null>(null);
 
   /**
@@ -37,9 +39,11 @@ export class IndexPageComponent{
     const channelName = `note-assigned.${this.user?.id}`;
     this.broadcastService.echo()?.private(channelName)
       .listen('AssignedToNote', (payload: CollaborativeNotesPayload) => {
-        console.log(payload);
         switch (payload.status) {
           case 'ASSIGNED':
+            this.notificationService.success(
+              `Se te ha añadido como colaborador a una nueva nota: ${payload.note.title}`
+            );
             this.paginatedNotes.update((prev) => {
               if(!prev) return null;
 
@@ -53,7 +57,18 @@ export class IndexPageComponent{
               return {...prev, data: actualData.filter(note => note.id != payload.note.id)};
             })
             break;
+          case 'UPDATED': 
+              this.paginatedNotes.update(prev => {
+                if(!prev) return null;
+                const newData = prev.data.map((note):NoteInterface  => note.id === payload.note.id? ({...payload.note}) :note);
+                return {...prev, data: newData};
+              })
+            break;
           default:
+            this.notificationService
+              .error(
+                `No se puede llevar a cabo una acción. Razón: No se ha considerado el status: ${payload.status}`
+              );
             break;
         }
       })
@@ -62,7 +77,14 @@ export class IndexPageComponent{
   loadPaginatedNotes = effect((onCleanup) => {
     const subscription = this.noteService
       .findAll()
-      .subscribe((notes) => this.paginatedNotes.set(notes));
+      .subscribe({
+        next: paginatedResources => {
+          this.paginatedNotes.set(paginatedResources);
+        },
+        error: error => {
+          this.notificationService.error(`No se pueden cargar los recursos por ahora, intenta de nuevo más tarde.`);
+        }
+      });
 
     onCleanup(() => subscription.unsubscribe());
   });

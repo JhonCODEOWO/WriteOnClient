@@ -12,6 +12,8 @@ import { TagsNote } from '../../interfaces/tags-note.interface';
 import { NotesService } from '../../services/Notes.service';
 import { InputComponentComponent } from "../../../global/components/input-component/input-component.component";
 import { RouterLink } from '@angular/router';
+import { NotificationService } from '../../../utils/notifications/services/notifications.service';
+import { AuthService } from '../../../auth/services/AuthService.service';
 
 @Component({
   selector: 'note-element',
@@ -22,10 +24,17 @@ import { RouterLink } from '@angular/router';
 export class NoteElementComponent {
   fb = inject(FormBuilder);
   formHelpers = FormHelper;
+  notificationService = inject(NotificationService);
+  user = inject(AuthService)._userAuthenticated;
 
   createTagForm = this.fb.group({
     name: ['', [Validators.required]]
   })
+  
+  /**
+   * FormGroup to include a array of Tags IDs
+   * @todo Reset tags field when the submit is success.
+   */
   tagsForm = this.fb.group({
     tags: this.fb.array<FormGroup>([], [Validators.required])
   });
@@ -73,8 +82,22 @@ export class NoteElementComponent {
 
   //Method that execute a delete operation in backend
   delete(id: string){
-    this.noteService.delete(id).subscribe(response => {
-      if(response) this.deletedNote.emit(id)
+    
+    if(id != this.note().id || this.user()?.id != this.note().owner.id) {
+      this.notificationService.error(`No puedes realizar esta acción porque no eres el propietario.`);
+      return;
+    };//Check if the id is the same than the note property or the user is different than the owner
+
+    this.noteService.delete(id).subscribe({
+      next: (response) => {
+        if(response) {
+          this.notificationService.success(`${this.note().title} eliminada correctamente`);
+          this.deletedNote.emit(id);
+        }
+      },
+      error: error => {
+        this.notificationService.error(`No se ha podido eliminar por un error interno, prueba otra vez o intenta de nuevo más tarde`);
+      }
     });
   }
 
@@ -89,7 +112,12 @@ export class NoteElementComponent {
     //Make the request to backend
     this.noteService.update(this.note().id, {tags: tagsIDs}).subscribe({
       next: (res) => {
+        this.notificationService.success(`Se han aplicado los tags correctamente.`);
         this.appliedTags.emit({noteId: this.note().id, tags: tagsGroup}); //Sent note and tags to applied to the parent
+        //TODO CLOSE THE MODAL.
+      },
+      error: error => {
+        this.notificationService.error(`No se pudo llevar a cabo la operación, intenta de nuevo o prueba más tarde.`);
       }
     })
   }
