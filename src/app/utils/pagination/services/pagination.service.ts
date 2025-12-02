@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PaginationService {
   /**
-   * Store all urls with the last location of scroll
+   * Signal to store all urls with the last location of scroll.
    */
   paginationMap = signal<PaginateRecord>({});
 
@@ -66,13 +66,18 @@ export class PaginationService {
     return Math.ceil(total/limit);
   }
 
-  restoreLocation(element: HTMLElement){
+  /**
+   * Restore the prev location of the element in the url if exists.
+   * @param element 
+   * @returns void
+   */
+  restoreLocation(scrollElement: HTMLElement){
     const route = this.activatedRoute.snapshot.url.toString();
     const record = this.paginationMap()[route];
 
     if(!record) return;
-    console.log(record);
-    element.scrollTo(
+    
+    scrollElement.scrollTo(
       {
         top: record.location,
         behavior: 'smooth'
