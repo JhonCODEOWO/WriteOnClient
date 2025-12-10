@@ -11,6 +11,17 @@ import { map, tap } from 'rxjs';
 import { AuthService } from '../../services/AuthService.service';
 import { NotificationService } from '../../../utils/notifications/services/notifications.service';
 import { TypeNotification } from '../../../utils/notifications/enums/type-notification.enum';
+import { ResetPasswordBody } from '../../interfaces/reset-password-body.interface';
+import { labelsMatch } from '../../../global/validators/labels-match.directive';
+
+interface QueryParams {
+  token: string | null,
+  email: string | null,
+}
+
+const errorsDictionary: Record<number, string> = {
+  0: 'Ha ocurrido un error de red, verifica tu conexión o intenta de nuevo más tarde.',
+}
 
 @Component({
   selector: 'auth-reset-password',
@@ -25,13 +36,16 @@ export class ResetPasswordPageComponent {
   notificationService = inject(NotificationService);
 
   emailSent = signal<boolean>(false);
-  queryParams = toSignal<{email: string | null, token: string | null}>(this.activatedRoute.queryParamMap.pipe(
-    map(queries => ({email: queries.get('email'), token: queries.get('token')}))
-  ));
+  queryParams = toSignal<QueryParams>(
+    this.activatedRoute.queryParamMap.pipe(
+      map(queries => ({email: queries.get('email') ?? null, token: queries.get('token') ?? null}))
+    ),
+  );
 
   hasQueries = effect(() => {
     if(this.queryParams()?.email && this.queryParams()?.token) {
       this.emailSent.update(active => true);
+      this.changePasswordForm.patchValue({token: this.queryParams()?.token});
       return;
     }
 
@@ -48,10 +62,16 @@ export class ResetPasswordPageComponent {
   }
   )
 
-  changePasswordForm = this.fb.group({
-    token: ['', [Validators.required]],
-    newPassword: ['', [Validators.required, passwordValidation]]
-  })
+  changePasswordForm = this.fb.group(
+    {
+      token: ['', [Validators.required]],
+      newPassword: ['', [Validators.required, passwordValidation]],
+      newPassword_confirmation: ['', [Validators.required, passwordValidation]],
+    },
+    {
+      validators: [labelsMatch({fieldName: 'newPassword'})]
+    }
+  );
 
   onSendEmailFormSubmit(){
     const {email = ''} = this.sendEmailForm.value;
@@ -65,16 +85,35 @@ export class ResetPasswordPageComponent {
           title: 'Correo enviado correctamente'
         });
       },
-      error: response => {
-
+      error: error => {
+        this.notificationService.error(errorsDictionary[error.status]);
       }
     });
   }
 
+  /**
+   * Handle the submit action in the form change password
+   * @returns 
+   */
   onChangePasswordForm(){
-    const {newPassword = null} = this.changePasswordForm.value;
-    if(this.changePasswordForm.invalid) return;
-    //SEND THE UPDATE OF THE USER TO BACKEND
+    const {newPassword = null, token = null, newPassword_confirmation = null} = this.changePasswordForm.value;
+    if(this.changePasswordForm.invalid || !this.queryParams()) return;
+
+    const body: ResetPasswordBody = {
+      password: newPassword ?? '',
+      token: token ?? '',
+      password_confirmation: newPassword_confirmation ?? ''
+    };
+
+    this.authService.resetPassword(this.queryParams()?.email ?? '', body).subscribe({
+      next: response => {
+        this.router.navigateByUrl('/auth');
+        this.notificationService.success(`Hemos restablecido correctamente tu contraseña correctamente.`);
+      },
+      error: error => {
+        this.notificationService.error(errorsDictionary[error.status]);
+      }
+    });
   }
 
   returnPreviousStep(){

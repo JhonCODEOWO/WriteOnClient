@@ -6,6 +6,7 @@ import { UserAuthenticated } from '../interfaces/user-authenticated';
 import { CollaboratorInterface } from '../../collaborators/interfaces/collaborator-interface';
 import { CreateUserInterface } from '../interfaces/create-account-request';
 import { GenericResponseInterface } from '../../global/interfaces/generic-response';
+import { ResetPasswordBody } from '../interfaces/reset-password-body.interface';
 
 const TOKEN_STORAGE_KEY = 'token';
 const USER_STORAGE_KEY = 'user';
@@ -72,6 +73,18 @@ export class AuthService {
     return this.client.post<GenericResponseInterface>(`${this.urlAuth}/recover-password-email`, {
       email
     });
+  }
+
+  /**
+   * Make a reset password request
+   * @param email The email of the user to reset the password
+   * @param bodyReq Body request data.
+   * @returns Observable<GenericResponseInterface> The response of the backend
+   */
+  resetPassword(email: string, bodyReq: ResetPasswordBody): Observable<GenericResponseInterface>{
+    return this.client.put<GenericResponseInterface>(`${this.urlAuth}/reset-password`, bodyReq, {params: {
+      email
+    }});
   }
 
   handleLogout(){
