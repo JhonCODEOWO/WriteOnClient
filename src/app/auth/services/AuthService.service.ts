@@ -69,6 +69,11 @@ export class AuthService {
     );
   }
 
+  /**
+   * Request to send a recovery account email to target if has already an account
+   * @param email Target to send the recovery email
+   * @returns 
+   */
   sendRecoverEmail(email: string): Observable<GenericResponseInterface> {
     return this.client.post<GenericResponseInterface>(`${this.urlAuth}/recover-password-email`, {
       email
@@ -82,9 +87,7 @@ export class AuthService {
    * @returns Observable<GenericResponseInterface> The response of the backend
    */
   resetPassword(email: string, bodyReq: ResetPasswordBody): Observable<GenericResponseInterface>{
-    return this.client.put<GenericResponseInterface>(`${this.urlAuth}/reset-password`, bodyReq, {params: {
-      email
-    }});
+    return this.client.put<GenericResponseInterface>(`${this.urlAuth}/reset-password/${email}`, bodyReq);
   }
 
   handleLogout(){

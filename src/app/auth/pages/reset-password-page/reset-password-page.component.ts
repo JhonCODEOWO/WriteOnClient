@@ -2,25 +2,23 @@ import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@ang
 import { ActivatedRoute, Router } from '@angular/router';
 import { InputComponentComponent } from "../../../global/components/input-component/input-component.component";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormHelper } from '../../../global/helpers/form-helpers';
-import { uniqueCheck } from '../../../global/validators/unique-check.directive';
 import { mustExistValidator } from '../../../global/validators/mustExists.directive';
 import { passwordValidation } from '../../../global/validators/password.validator';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map, tap } from 'rxjs';
+import { map } from 'rxjs';
 import { AuthService } from '../../services/AuthService.service';
 import { NotificationService } from '../../../utils/notifications/services/notifications.service';
 import { TypeNotification } from '../../../utils/notifications/enums/type-notification.enum';
 import { ResetPasswordBody } from '../../interfaces/reset-password-body.interface';
 import { labelsMatch } from '../../../global/validators/labels-match.directive';
+import ResetPageQueryParams from './interfaces/query-params.interface';
 
-interface QueryParams {
-  token: string | null,
-  email: string | null,
-}
-
+/**
+ * TODO: MAKE A GLOBAL DICTIONARY TO SHOW ERRORS
+ */
 const errorsDictionary: Record<number, string> = {
   0: 'Ha ocurrido un error de red, verifica tu conexión o intenta de nuevo más tarde.',
+  422: 'Al parecer el token ha expirado, realiza el proceso nuevamente e intenta de nuevo.'
 }
 
 @Component({
@@ -34,17 +32,28 @@ export class ResetPasswordPageComponent {
   activatedRoute = inject(ActivatedRoute);
   authService = inject(AuthService);
   notificationService = inject(NotificationService);
+  fb = inject(FormBuilder);
 
+  /**
+   * Flag to apply UI changes if the email has sent to the user or not
+   */
   emailSent = signal<boolean>(false);
-  queryParams = toSignal<QueryParams>(
+
+  /**
+   * Signal that retrieves the query paramMap on the actual route and transform it in the typed Interface
+   */
+  queryParams = toSignal<ResetPageQueryParams>(
     this.activatedRoute.queryParamMap.pipe(
-      map(queries => ({email: queries.get('email') ?? null, token: queries.get('token') ?? null}))
+      map((queries): ResetPageQueryParams => ({email: queries.get('email') ?? null, token: queries.get('token') ?? null}))
     ),
   );
 
+  /**
+   * Effect to apply a change flag in emailSent based on the query params existence
+   */
   hasQueries = effect(() => {
     if(this.queryParams()?.email && this.queryParams()?.token) {
-      this.emailSent.update(active => true);
+      this.emailSent.update(active => !active);
       this.changePasswordForm.patchValue({token: this.queryParams()?.token});
       return;
     }
@@ -52,8 +61,9 @@ export class ResetPasswordPageComponent {
     this.emailSent.set(false);
   })
 
-  fb = inject(FormBuilder);
-
+  /**
+   * Reactive form with data required and validators to send the request.
+   */
   sendEmailForm = this.fb.group({
     email: ['', [Validators.required, Validators.email], [mustExistValidator({table: 'users', column: 'email'})]]
   },
@@ -62,11 +72,14 @@ export class ResetPasswordPageComponent {
   }
   )
 
+  /**
+   * Reactive form with all validation rules and body data required to send a reset password request.
+   */
   changePasswordForm = this.fb.group(
     {
       token: ['', [Validators.required]],
-      newPassword: ['', [Validators.required, passwordValidation]],
-      newPassword_confirmation: ['', [Validators.required, passwordValidation]],
+      newPassword: ['', [Validators.required, Validators.minLength(8),passwordValidation]],
+      newPassword_confirmation: ['', [Validators.required, Validators.minLength(8),passwordValidation]],
     },
     {
       validators: [labelsMatch({fieldName: 'newPassword'})]
