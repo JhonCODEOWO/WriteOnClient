@@ -15,7 +15,7 @@ export const noteRoutes: Routes = [
             {
                 path: ':id',
                 component: ViewNotePageComponent
-            }
+            },
         ]
     }
 ]

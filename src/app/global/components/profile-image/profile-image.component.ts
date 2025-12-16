@@ -27,8 +27,12 @@ export class ProfileImageComponent implements OnInit {
 
   initials = computed(() => {
     let initials = '';
-    const byParts = this.name().split(' ');
-    if (byParts.length === 0) return byParts[0][0];
+
+    if(this.name().trim().length === 0) return 'N/A';
+    
+    const byParts = this.name().trim().split(' ');
+
+    if(byParts.length === 1) return byParts[0][0];
     return `${byParts[0][0]}${byParts[1][0]}`;
   });
 

@@ -1,0 +1,41 @@
+import { Routes } from '@angular/router';
+import { PrincipalLayoutComponent } from './layout/principal-layout/principal-layout.component';
+import { IndexPageComponent } from './pages/index-page/index-page.component';
+import { isLoggedGuard } from '../auth/guards/is-logged.guard';
+import { AccountLayoutComponent } from './layout/account-layout/account-layout.component';
+import { SecurityProfilePageComponent } from './pages/config-account/security-profile-page/security-profile-page.component';
+import { EditProfilePageComponent } from './pages/config-account/edit-profile-page/edit-profile-page.component';
+
+const globalRoutes: Routes = [
+    {
+        path: '',
+        component: PrincipalLayoutComponent,
+        children: [
+            {
+                path: '',
+                component: IndexPageComponent,
+            },
+            {
+                path: 'edit-profile',
+                component: AccountLayoutComponent,
+                children: [
+                    {
+                        path: '',
+                        component: EditProfilePageComponent,
+                    },
+                    {
+                        path: 'security',
+                        component: SecurityProfilePageComponent,
+                    },
+                    {
+                        path: '**',
+                        redirectTo: '',
+                    }
+                ]
+            }
+        ],
+    }
+]
+
+
+export default globalRoutes;

@@ -1,0 +1,17 @@
+<form action="" [formGroup]="profileData">
+  <h1>Datos de tu cuenta</h1>
+  <p>Actualiza información principal de tu cuenta.</p>
+  <div class="divider"></div>
+  <div class="flex flex-col gap-y-2">
+    <div class="flex gap-x-3 items-center">
+      <app-profile-image [name]="profileNameControl?.value ?? ''" />
+      <div class="flex-1">
+        <app-input-component name="name" label="Tu nombre completo" inputType="text" [formGroup]="profileData" />
+      </div>
+    </div>
+    <app-input-component name="email" label="Correo electrónico" inputType="email" [formGroup]="profileData" />
+    <app-input-component name="password" label="Autoriza con tu contraseña"
+      inputType="password" [formGroup]="profileData" />
+  </div>
+  <button class="button button-info mt-4">Actualizar información</button>
+</form>

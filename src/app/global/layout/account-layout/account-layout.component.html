@@ -1,0 +1,9 @@
+<div class="flex flex-col gap-y-2 md:flex-row gap-x-5 md:w-[90%] md:mx-auto md:my-0">
+  <aside class="flex md:flex-col gap-y-1 dark:text-white bg-white dark:bg-neutral-800 text-xs rounded-2xl p-3">
+    <a routerLink="/edit-profile" [routerLinkActive]="['bg-neutral-600']" [routerLinkActiveOptions]="{exact:true}" class="rounded px-3 py-1">Datos de la cuenta</a>
+    <a routerLink="/edit-profile/security" class="rounded px-3 py-1" [routerLinkActive]="['bg-neutral-600']" [routerLinkActiveOptions]="{exact:true}">Seguridad</a>
+  </aside>
+  <div class="flex-1 bg-neutral-700 rounded-2xl p-5 dark:text-white min-h-[400px]">
+    <router-outlet/>
+  </div>
+</div>
