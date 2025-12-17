@@ -2,4 +2,27 @@
   <h1>Seguridad</h1>
   <p>Configura o actualiza la seguridad de tu cuenta.</p>
   <div class="divider"></div>
+  <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePasswordSubmit()" class="grid grid-cols-2 gap-x-3 gap-y-2">
+    @if (error()) {
+      <div class="col-span-2">
+        <p class="bg-red-500 text-white p-3 text-center relative w-full rounded">
+          {{error()}}
+          <button (click)="error.set(null)" class="absolute right-5 cursor-pointer" type="button">x</button>
+        </p>  
+      </div>
+    }
+    <h2 class="font-medium text-2xl col-span-2">Actualizar contraseña</h2>
+    <app-input-component [formGroup]="changePasswordForm" name="password" label="Nueva contraseña" inputType="password"/>
+    <div>
+      <app-input-component [formGroup]="changePasswordForm" name="password_confirmation" label="Confirma la contraseña" inputType="password"/>
+      @if (formHelper.showError(changePasswordForm) && changePasswordForm.dirty) {
+        <p class="text-xs text-red-500">{{formHelper.showError(changePasswordForm)}}</p>
+      }
+    </div>
+    <div class="col-span-2">
+      <app-input-component [formGroup]="changePasswordForm" name="actual_password" label="Escribe tu contraseña actual" inputType="password" />
+    </div>
+
+    <button class="button button-error col-span-2 p-2">Cambiar contraseña</button>
+  </form>
 </main>

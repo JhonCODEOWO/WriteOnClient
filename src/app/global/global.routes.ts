@@ -14,24 +14,28 @@ const globalRoutes: Routes = [
             {
                 path: '',
                 component: IndexPageComponent,
+                title: 'Inicio'
             },
             {
-                path: 'edit-profile',
+                path: 'settings',
                 component: AccountLayoutComponent,
                 children: [
                     {
-                        path: '',
+                        path: 'edit-profile',
                         component: EditProfilePageComponent,
+                        title: 'Editar perfil'
                     },
                     {
                         path: 'security',
                         component: SecurityProfilePageComponent,
+                        title: 'Seguridad'
                     },
                     {
                         path: '**',
-                        redirectTo: '',
+                        redirectTo: 'edit-profile',
                     }
-                ]
+                ],
+                title: 'Configuraciones de la cuenta'
             }
         ],
     }

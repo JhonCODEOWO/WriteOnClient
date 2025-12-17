@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { catchError, delay, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, delay, map, Observable, of, switchMap, tap } from 'rxjs';
 import { UserAuthenticated } from '../interfaces/user-authenticated';
 import { CollaboratorInterface } from '../../collaborators/interfaces/collaborator-interface';
 import { CreateUserInterface } from '../interfaces/create-account-request';
 import { GenericResponseInterface } from '../../global/interfaces/generic-response';
 import { ResetPasswordBody } from '../interfaces/reset-password-body.interface';
+import { UpdateUserRequest } from '../interfaces/update-user-request';
 
 const TOKEN_STORAGE_KEY = 'token';
 const USER_STORAGE_KEY = 'user';
@@ -15,7 +16,7 @@ const USER_STORAGE_KEY = 'user';
   providedIn: 'root'
 })
 export class AuthService {
-  urlAuth = `${environment.API_URL}/auth`;
+  private urlAuth = `${environment.API_URL}/auth`;
   
   client = inject(HttpClient);
   private userAuthenticated = signal<UserAuthenticated|null>(this.getUserStored());
@@ -40,7 +41,15 @@ export class AuthService {
     return this.client.post<{token: string}>(`${this.urlAuth}/login`, {email, password}).pipe(
       tap(response => this.handleLogin(response.token)), //Make operations with token retrieved by backends
       switchMap(() => this.getUser()), //Make request to try get the user
-      tap(user => this.userAuthenticated.set(user)) //Set user logged into the service
+      tap(user => {
+        if(!user) {
+          this.handleLogout();
+          return;
+        }
+
+        this.storeUser(user);
+      }), //Set user logged into the service
+      map(user => user)
     );
   }
 
@@ -54,12 +63,25 @@ export class AuthService {
       switchMap(userCreated => this.login(userCreated.email, body.password)) //After create try to login
     );
   }
+  
+  update(body: UpdateUserRequest): Observable<UserAuthenticated> {
+    return this.client.post<UserAuthenticated>(`${this.urlAuth}`, {_method: 'PUT', ...body})
+      .pipe(
+        tap(res => {
+          this.storeUser(res);
+          
+          if(body.password && body.password_confirmation){
+            this.handleLogout();
+          }
+        })
+      );
+  }
 
   getUser(): Observable<UserAuthenticated | null>{
     return this.client.get<UserAuthenticated>(`${this.urlAuth}/user`).pipe(
       catchError(() => {
         return of(null);
-      })
+      }),
     );
   }
 
@@ -90,17 +112,21 @@ export class AuthService {
     return this.client.put<GenericResponseInterface>(`${this.urlAuth}/reset-password/${email}`, bodyReq);
   }
 
-  handleLogout(){
+  private handleLogout(){
     this.token.set(null);
     this.userAuthenticated.set(null);
     localStorage.removeItem(TOKEN_STORAGE_KEY);
     localStorage.removeItem(USER_STORAGE_KEY);
   }
 
-  handleLogin(token: string){
+  private handleLogin(token: string){
     this.token.set(token);
     localStorage.setItem(TOKEN_STORAGE_KEY, token);
-    this.getUser().subscribe(user => localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user)));
+  }
+
+  storeUser(user: UserAuthenticated){
+    this.userAuthenticated.set(user);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
   }
 
   getUserStored(): UserAuthenticated | null{

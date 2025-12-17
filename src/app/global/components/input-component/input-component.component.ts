@@ -48,7 +48,8 @@ export class InputComponentComponent {
    * A computed reference to the AbstractControl within the form group.
    */
   abstractControl = computed(() => {
-    return this.formGroup().controls[this.name()]
+    if(!this.formGroup().controls[this.name()]) console.warn(`The control ${this.name()} doesn't exists in the form group, the input component wont work correctly, the control names available are: ${Object.keys(this.formGroup().controls).join(', ')}`);
+    return this.formGroup().controls[this.name()];
   });
 
   /**

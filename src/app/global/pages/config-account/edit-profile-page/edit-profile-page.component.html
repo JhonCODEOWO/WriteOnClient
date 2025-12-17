@@ -1,4 +1,4 @@
-<form action="" [formGroup]="profileData">
+<form [formGroup]="profileData" (ngSubmit)="onSubmitProfileData()">
   <h1>Datos de tu cuenta</h1>
   <p>Actualiza información principal de tu cuenta.</p>
   <div class="divider"></div>

@@ -28,6 +28,6 @@ export const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: 'notes'
+        redirectTo: ''
     }
 ];
