@@ -12,10 +12,13 @@ import { CreateTagComponent } from '../../../tags/components/create-tag/create-t
 import { NgClass } from '@angular/common';
 import { LoaderComponent } from '../../../global/components/loader/loader.component';
 import { InputComponentComponent } from '../../../global/components/input-component/input-component.component';
+import { ButtonStateComponent } from "../../../global/components/button-state/button-state.component";
+import { TypeButton } from '../../../global/components/button-state/enums/type-button.enum';
+import { StateButton } from '../../../global/components/button-state/enums/state-button.enum';
 
 @Component({
   selector: 'note-create-view-update',
-  imports: [ReactiveFormsModule, HeaderInfoComponent, CreateTagComponent, NgClass, LoaderComponent, InputComponentComponent],
+  imports: [ReactiveFormsModule, HeaderInfoComponent, CreateTagComponent, NgClass, LoaderComponent, InputComponentComponent, ButtonStateComponent],
   templateUrl: './CreateViewUpdateNote.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -25,6 +28,9 @@ export class CreateViewUpdateNoteComponent {
   tagsService = inject(TagsService);
   notesService = inject(NotesService);
   formHelpers = FormHelper;
+  availableTypes = TypeButton;
+
+  submitButtonState = signal<StateButton>(StateButton.STANDBY);
 
   richText = viewChild<ElementRef>('richText');
   toolbar = viewChild<ElementRef>('toolbar');
@@ -107,6 +113,7 @@ export class CreateViewUpdateNoteComponent {
   onSubmit(){
     this.noteForm.markAllAsTouched();
     if(this.noteForm.invalid) return;
+    this.submitButtonState.set(StateButton.LOADING);
     const formData:NoteResourceRequest = {...this.noteForm.value as any};
     this.notesService.create(formData).subscribe(note => this.router.navigateByUrl(''));
   }

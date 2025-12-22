@@ -14,10 +14,13 @@ import { InputComponentComponent } from "../../../global/components/input-compon
 import { RouterLink } from '@angular/router';
 import { NotificationService } from '../../../utils/notifications/services/notifications.service';
 import { AuthService } from '../../../auth/services/AuthService.service';
+import { ButtonStateComponent } from "../../../global/components/button-state/button-state.component";
+import { TypeButton } from '../../../global/components/button-state/enums/type-button.enum';
+import { StateButton } from '../../../global/components/button-state/enums/state-button.enum';
 
 @Component({
   selector: 'note-element',
-  imports: [ResumeNotePipe, ModalComponent, ModalTriggerComponent, ReactiveFormsModule, LoaderComponent, InputComponentComponent, RouterLink],
+  imports: [ResumeNotePipe, ModalComponent, ModalTriggerComponent, ReactiveFormsModule, LoaderComponent, InputComponentComponent, RouterLink, ButtonStateComponent],
   templateUrl: './note-element.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -26,6 +29,10 @@ export class NoteElementComponent {
   formHelpers = FormHelper;
   notificationService = inject(NotificationService);
   user = inject(AuthService)._userAuthenticated;
+  typesButton = TypeButton;
+  availableStatus = StateButton;
+
+  deletingStatus = signal<StateButton>(this.availableStatus.STANDBY);
 
   createTagForm = this.fb.group({
     name: ['', [Validators.required]]
@@ -82,7 +89,7 @@ export class NoteElementComponent {
 
   //Method that execute a delete operation in backend
   delete(id: string){
-    
+    this.deletingStatus.set(this.availableStatus.LOADING);
     if(id != this.note().id || this.user()?.id != this.note().owner.id) {
       this.notificationService.error(`No puedes realizar esta acción porque no eres el propietario.`);
       return;
@@ -93,9 +100,11 @@ export class NoteElementComponent {
         if(response) {
           this.notificationService.success(`${this.note().title} eliminada correctamente`);
           this.deletedNote.emit(id);
+          this.deletingStatus.set(this.availableStatus.STANDBY);
         }
       },
       error: error => {
+        this.deletingStatus.set(this.availableStatus.STANDBY);
         this.notificationService.error(`No se ha podido eliminar por un error interno, prueba otra vez o intenta de nuevo más tarde`);
       }
     });
