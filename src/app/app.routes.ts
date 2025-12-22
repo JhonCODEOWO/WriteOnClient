@@ -23,17 +23,11 @@ export const routes: Routes = [
     },
     {
         path: '',
-        component: PrincipalLayoutComponent,
-        children: [
-            {
-                path: '',
-                component: IndexPageComponent
-            }
-        ],
+        loadChildren: () => import('./global/global.routes'),
         canMatch: [isLoggedGuard]
     },
     {
         path: '**',
-        redirectTo: 'notes'
+        redirectTo: ''
     }
 ];
