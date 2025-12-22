@@ -8,7 +8,7 @@ export class RouteMulter {
 
     static toRouteUiElement(route: Route): RouteElementUiInterface{
         return {
-            title: route.title?.toString() ?? `Title not assigned yet in ${route.path}`,
+            title: route.data?.['label'] ?? `Title not assigned yet in ${route.path}`,
             url: route.path ?? ''
         }
     }

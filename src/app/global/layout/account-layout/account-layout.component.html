@@ -1,10 +1,14 @@
-<div class="flex flex-col gap-y-2 md:flex-row gap-x-5 md:w-[80%] md:mx-auto md:my-0">
+<div class="flex flex-col gap-y-2 justify-center md:flex-row gap-x-5 absolute h-full w-full md:w-[80%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-2">
   <aside class="flex md:flex-col gap-y-1 dark:text-white bg-white dark:bg-neutral-800 text-xs rounded-2xl p-3">
     @for (accountRoute of accountRoutes(); track $index) {
       <a [routerLink]="accountRoute.url" [routerLinkActive]="['bg-neutral-600']" [routerLinkActiveOptions]="{exact:true}" class="rounded px-3 py-1">{{accountRoute.title}}</a>
     }
+    <a routerLink="/" class="mt-auto py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-500 text-white hover:bg-red-600 focus:outline-hidden focus:bg-red-600 disabled:opacity-50 disable:pointer-events-none">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m7.825 13l5.6 5.6L12 20l-8-8l8-8l1.425 1.4l-5.6 5.6H20v2z"/></svg>
+      Salir
+    </a>
   </aside>
-  <div class="flex-1 bg-neutral-700 rounded-2xl p-5 dark:text-white min-h-[400px]">
+  <div class="flex-1 bg-neutral-700 rounded-2xl p-5 dark:text-white min-h-[400px] overflow-auto">
     <router-outlet/>
   </div>
 </div>

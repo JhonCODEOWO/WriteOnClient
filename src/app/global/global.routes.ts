@@ -23,12 +23,18 @@ const globalRoutes: Routes = [
                     {
                         path: 'edit-profile',
                         component: EditProfilePageComponent,
-                        title: 'Editar perfil'
+                        title: 'Ajustes - Editar perfil',
+                        data: {
+                            label: 'Editar perfil',
+                        }
                     },
                     {
                         path: 'security',
                         component: SecurityProfilePageComponent,
-                        title: 'Seguridad'
+                        title: 'Ajustes - Seguridad',
+                        data: {
+                            label: 'Seguridad'
+                        }
                     },
                     {
                         path: '**',
